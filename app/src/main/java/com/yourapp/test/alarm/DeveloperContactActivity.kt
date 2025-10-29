@@ -5,24 +5,38 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.yourapp.test.alarm.databinding.ActivityDeveloperContactBinding
+import androidx.appcompat.widget.Toolbar
+import com.google.android.material.card.MaterialCardView
 
 class DeveloperContactActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityDeveloperContactBinding
+    private lateinit var cardEmail: MaterialCardView
+    private lateinit var cardGithub: MaterialCardView
+    private lateinit var cardFeedback: MaterialCardView
+    private lateinit var cardBugReport: MaterialCardView
+    private lateinit var cardWebsite: MaterialCardView
+    private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_developer_contact)
         
-        binding = ActivityDeveloperContactBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        
+        initViews()
         setupToolbar()
         setupContactOptions()
     }
     
+    private fun initViews() {
+        toolbar = findViewById(R.id.toolbar)
+        cardEmail = findViewById(R.id.cardEmail)
+        cardGithub = findViewById(R.id.cardGithub)
+        cardFeedback = findViewById(R.id.cardFeedback)
+        cardBugReport = findViewById(R.id.cardBugReport)
+        cardWebsite = findViewById(R.id.cardWebsite)
+    }
+    
     private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
@@ -32,27 +46,27 @@ class DeveloperContactActivity : AppCompatActivity() {
     
     private fun setupContactOptions() {
         // Email contact
-        binding.cardEmail.setOnClickListener {
+        cardEmail.setOnClickListener {
             sendEmail()
         }
         
         // GitHub repository
-        binding.cardGithub.setOnClickListener {
+        cardGithub.setOnClickListener {
             openGitHub()
         }
         
         // App feedback
-        binding.cardFeedback.setOnClickListener {
+        cardFeedback.setOnClickListener {
             sendFeedback()
         }
         
         // Bug report
-        binding.cardBugReport.setOnClickListener {
+        cardBugReport.setOnClickListener {
             reportBug()
         }
         
         // Website
-        binding.cardWebsite.setOnClickListener {
+        cardWebsite.setOnClickListener {
             openWebsite()
         }
     }
@@ -65,27 +79,22 @@ class DeveloperContactActivity : AppCompatActivity() {
                 putExtra(Intent.EXTRA_TEXT, "Hi developers,\n\nI'm reaching out regarding the Alarm App.\n\n")
             }
             
-            if (emailIntent.resolveActivity(packageManager) != null) {
-                startActivity(emailIntent)
-            } else {
-                Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show()
-            }
+            // More robust intent handling
+            val chooser = Intent.createChooser(emailIntent, "Send email using...")
+            startActivity(chooser)
         } catch (e: Exception) {
-            Toast.makeText(this, "Unable to send email", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show()
         }
     }
     
     private fun openGitHub() {
         try {
-            val githubIntent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse("https://github.com/Bascode-040612V1/AlarmTalk")
-            }
+            val githubUrl = "https://github.com/Bascode-040612V1/AlarmTalk"
+            val githubIntent = Intent(Intent.ACTION_VIEW, Uri.parse(githubUrl))
             
-            if (githubIntent.resolveActivity(packageManager) != null) {
-                startActivity(githubIntent)
-            } else {
-                Toast.makeText(this, "No browser app found", Toast.LENGTH_SHORT).show()
-            }
+            // More robust intent handling
+            val chooser = Intent.createChooser(githubIntent, "Open with")
+            startActivity(chooser)
         } catch (e: Exception) {
             Toast.makeText(this, "Unable to open GitHub", Toast.LENGTH_SHORT).show()
         }
@@ -103,13 +112,11 @@ class DeveloperContactActivity : AppCompatActivity() {
                         "Thanks for creating this app!")
             }
             
-            if (feedbackIntent.resolveActivity(packageManager) != null) {
-                startActivity(feedbackIntent)
-            } else {
-                Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show()
-            }
+            // More robust intent handling
+            val chooser = Intent.createChooser(feedbackIntent, "Send feedback using...")
+            startActivity(chooser)
         } catch (e: Exception) {
-            Toast.makeText(this, "Unable to send feedback", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show()
         }
     }
     
@@ -129,29 +136,24 @@ class DeveloperContactActivity : AppCompatActivity() {
                         "Additional notes:\n\n")
             }
             
-            if (bugReportIntent.resolveActivity(packageManager) != null) {
-                startActivity(bugReportIntent)
-            } else {
-                Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show()
-            }
+            // More robust intent handling
+            val chooser = Intent.createChooser(bugReportIntent, "Report bug using...")
+            startActivity(chooser)
         } catch (e: Exception) {
-            Toast.makeText(this, "Unable to send bug report", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show()
         }
     }
     
     private fun openWebsite() {
         try {
-            val websiteIntent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse("https://alarmtalk.is-best.net/AlarmTalk_Website")
-            }
+            val websiteUrl = "https://alarmtalk.is-best.net/AlarmTalk_Website"
+            val websiteIntent = Intent(Intent.ACTION_VIEW, Uri.parse(websiteUrl))
             
-            if (websiteIntent.resolveActivity(packageManager) != null) {
-                startActivity(websiteIntent)
-            } else {
-                Toast.makeText(this, "No browser app found", Toast.LENGTH_SHORT).show()
-            }
+            // More robust intent handling
+            val chooser = Intent.createChooser(websiteIntent, "Open website with...")
+            startActivity(chooser)
         } catch (e: Exception) {
-            Toast.makeText(this, "Unable to open website", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No browser app found", Toast.LENGTH_SHORT).show()
         }
     }
     

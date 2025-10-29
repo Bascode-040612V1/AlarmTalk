@@ -4,7 +4,7 @@
     <string name="title_second_fragment">Second Fragment</string>
     <string name="time">Time</string>
     <string name="alarm_details">Alarm Details</string>
-    <string name="alarm_title">Alarm</string>
+    <string name="alarm_title">Alarm Title</string>
     <string name="note">Note (optional)</string>
     <string name="repeat_days">Repeat Days</string>
     <string name="snooze_duration">Snooze Duration</string>
@@ -38,7 +38,7 @@
     <string name="no_ringtone_selected">No ringtone selected</string>
     <string name="developer_contact">Developer Contact</string>
     <string name="developer_info">For support and inquiries, please contact:</string>
-    <string name="developer_email">joshuapaviabasco@proton.me</string>
+    <string name="developer_email">joshuapaviabasco.1@proton.me</string>
     <string name="developer_phone">+1 (555) 123-4567</string>
     <string name="developer_website">https://joshua.is-great.net/?i=1</string>
     <string name="back">Back</string>
@@ -76,16 +76,26 @@
     <string name="tts_voice_female">Female Voice</string>
     <string name="tts_level_message">TTS volume should match ringtone level</string>
     <string name="general_settings">General Settings</string>
-    <string name="vibration">Vibration</string>
-    <string name="snooze_duration">Snooze Duration</string>
-    <string name="save">Save</string>
-    <string name="cancel">Cancel</string>
-    <string name="delete">Delete</string>
-    <string name="select_ringtone">Select Ringtone</string>
     <string name="voice_from">Voice from</string>
     <string name="select_recorded_voice">Select Recorded Voice</string>
     <string name="sound_settings">Sound &amp; Settings</string>
     <string name="note_to_be_use_in_tts">Note to be use in TTS</string>
     <string name="volume_safety_message">Minimum 30% for safety</string>
     <string name="enable">Enable</string>
+    
+    <!-- Adding missing strings -->
+    <string name="volume">Volume</string>
+    <string name="text_to_speech">Text to Speech</string>
+    <string name="tts_message">TTS Message</string>
+    <string name="record_voice_message">Record Voice Message</string>
+    <string name="hide_voice_history">Hide Voice History</string>
+    <string name="show_voice_history">Show Voice History</string>
+    <string name="no_voice_recording">No Voice Recording</string>
+    <string name="voice_clarity_message">Voice Clarity Message</string>
+    <string name="next">Next</string>
+    <string name="lorem_ipsum">Lorem Ipsum</string>
+    <string name="previous">Previous</string>
+    <string name="action_settings">Action Settings</string>
+    <string name="first_fragment_label">First Fragment Label</string>
+    <string name="second_fragment_label">Second Fragment Label</string>
 </resources>

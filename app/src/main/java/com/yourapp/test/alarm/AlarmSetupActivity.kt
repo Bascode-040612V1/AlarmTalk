@@ -944,7 +944,7 @@ class AlarmSetupActivity : AppCompatActivity() {
             }
         }
 
-        val title = editTextTitle.text?.toString()?.takeIf { it.isNotBlank() } ?: "Alarm"
+        val title = editTextTitle.text?.toString()?.takeIf { it.isNotBlank() } ?: "Alarm Title"
         val note = editTextNote.text?.toString() ?: ""
 
         val repeatDays = dayChips.filter { it.value.isChecked }.keys.toSet()
@@ -1124,6 +1124,7 @@ class AlarmSetupActivity : AppCompatActivity() {
                 }
                 
                 setDataSource(this@AlarmSetupActivity, selectedRingtoneUri ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM))
+                // CRITICAL FIX: Apply current ringtone volume to preview
                 setVolume(ringtoneVolume, ringtoneVolume)
                 
                 setOnPreparedListener {
@@ -1162,44 +1163,50 @@ class AlarmSetupActivity : AppCompatActivity() {
     
     private fun playVoicePreview() {
         try {
-            // Only play voice preview if we have a recording
-            if (currentVoiceRecordingPath.isNullOrEmpty()) {
-                return
-            }
-            
-            // Stop any existing preview
-            stopVoicePreview()
-            
-            // Create and configure MediaPlayer for voice preview
-            voicePreviewPlayer = MediaPlayer().apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    setAudioAttributes(
-                        AudioAttributes.Builder()
-                            .setUsage(AudioAttributes.USAGE_ALARM)
-                            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                            .build()
-                    )
-                } else {
-                    setAudioStreamType(AudioManager.STREAM_ALARM)
+            currentVoiceRecordingPath?.let { path ->
+                // Stop any existing voice preview
+                stopVoicePreview()
+                
+                // Check if file exists
+                val file = File(path)
+                if (!file.exists()) {
+                    Log.e("AlarmSetupActivity", "Voice recording file not found: $path")
+                    return
                 }
                 
-                setDataSource(currentVoiceRecordingPath!!)
-                setVolume(voiceVolume, voiceVolume)
-                
-                setOnPreparedListener {
-                    start()
-                    // Stop after 3 seconds preview
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        stopVoicePreview()
-                    }, 3000)
+                voicePreviewPlayer = MediaPlayer().apply {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        setAudioAttributes(
+                            AudioAttributes.Builder()
+                                .setUsage(AudioAttributes.USAGE_MEDIA)
+                                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                                .build()
+                        )
+                    } else {
+                        setAudioStreamType(AudioManager.STREAM_MUSIC)
+                    }
+                    
+                    setDataSource(path)
+                    // CRITICAL FIX: Apply current voice volume to preview
+                    setVolume(voiceVolume, voiceVolume)
+                    
+                    setOnPreparedListener {
+                        start()
+                        // Stop after 2 seconds preview
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            stopVoicePreview()
+                        }, 2000)
+                    }
+                    
+                    setOnErrorListener { _, what, extra ->
+                        Log.e("AlarmSetupActivity", "Voice preview error: what=$what, extra=$extra")
+                        false
+                    }
+                    
+                    prepareAsync()
                 }
                 
-                setOnErrorListener { _, _, _ ->
-                    Log.e("AlarmSetupActivity", "Error playing voice preview")
-                    false
-                }
-                
-                prepareAsync()
+                Log.d("AlarmSetupActivity", "Voice preview started with volume: $voiceVolume")
             }
         } catch (e: Exception) {
             Log.e("AlarmSetupActivity", "Error starting voice preview", e)

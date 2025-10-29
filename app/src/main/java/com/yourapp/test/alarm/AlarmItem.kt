@@ -11,7 +11,7 @@ data class AlarmItem(
     var isEnabled: Boolean,
     val calendar: Calendar,
     val repeatDays: Set<Int> = emptySet(), // Calendar.SUNDAY, MONDAY, etc.
-    val title: String = "Alarm",
+    val title: String = "Alarm Title",
     val note: String = "",
     val ringtoneUri: Uri? = null,
     val ringtoneName: String = "Default",

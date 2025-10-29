@@ -102,7 +102,7 @@
                             android:id="@+id/editTextTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/alarm_title"
+                            android:hint="@string/alarm_title"
                             android:textColor="@color/primary_text"
                             android:maxLines="1" />
 

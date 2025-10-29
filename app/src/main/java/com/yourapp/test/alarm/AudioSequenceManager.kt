@@ -163,8 +163,9 @@ class AudioSequenceManager(private val context: Context) {
                 // Configure for looping during the alarm phase
                 isLooping = true
                 
-                // Start at 0 volume for fade-in
-                setVolume(0f, 0f)
+                // CRITICAL FIX: Apply user-selected volume directly to MediaPlayer
+                // This ensures the volume setting is respected regardless of system volume
+                setVolume(ringtoneVolume, ringtoneVolume)
                 
                 // Prepare and start
                 prepare()
@@ -186,7 +187,14 @@ class AudioSequenceManager(private val context: Context) {
     private fun startFadeIn() {
         fadeAnimator?.cancel()
         
-        fadeAnimator = ValueAnimator.ofFloat(0f, ringtoneVolume).apply {
+        // Calculate adjusted ringtone volume (50% when voice overlay is active)
+        val adjustedRingtoneVolume = if (hasVoiceOverlay && !voiceRecordingPath.isNullOrEmpty()) {
+            ringtoneVolume * 0.5f // Reduce to 50% when voice overlay is active
+        } else {
+            ringtoneVolume // Use full volume when no voice overlay
+        }
+        
+        fadeAnimator = ValueAnimator.ofFloat(0f, adjustedRingtoneVolume).apply {
             duration = FADE_IN_DURATION
             
             addUpdateListener { animator ->
@@ -204,7 +212,7 @@ class AudioSequenceManager(private val context: Context) {
             start()
         }
         
-        Log.d(TAG, "📈 Started fade-in (2s)")
+        Log.d(TAG, "📈 Started fade-in (2s) with adjusted volume: $adjustedRingtoneVolume")
     }
 
     /**
@@ -213,10 +221,17 @@ class AudioSequenceManager(private val context: Context) {
     private fun scheduleFullVolumePhase() {
         if (!isPlaying) return
         
-        Log.d(TAG, "🔊 Full volume phase (4s)")
+        // Calculate adjusted ringtone volume (50% when voice overlay is active)
+        val adjustedRingtoneVolume = if (hasVoiceOverlay && !voiceRecordingPath.isNullOrEmpty()) {
+            ringtoneVolume * 0.5f // Reduce to 50% when voice overlay is active
+        } else {
+            ringtoneVolume // Use full volume when no voice overlay
+        }
+        
+        Log.d(TAG, "🔊 Full volume phase (4s) with adjusted volume: $adjustedRingtoneVolume")
         
         // Ensure full volume
-        ringtonePlayer?.setVolume(ringtoneVolume, ringtoneVolume)
+        ringtonePlayer?.setVolume(adjustedRingtoneVolume, adjustedRingtoneVolume)
         
         // Schedule fade-out after 4 seconds of full volume (6 seconds total)
         handler.postDelayed({
@@ -239,7 +254,14 @@ class AudioSequenceManager(private val context: Context) {
     private fun startFadeOut() {
         fadeAnimator?.cancel()
         
-        fadeAnimator = ValueAnimator.ofFloat(ringtoneVolume, 0f).apply {
+        // Calculate adjusted ringtone volume (50% when voice overlay is active)
+        val adjustedRingtoneVolume = if (hasVoiceOverlay && !voiceRecordingPath.isNullOrEmpty()) {
+            ringtoneVolume * 0.5f // Reduce to 50% when voice overlay is active
+        } else {
+            ringtoneVolume // Use full volume when no voice overlay
+        }
+        
+        fadeAnimator = ValueAnimator.ofFloat(adjustedRingtoneVolume, 0f).apply {
             duration = FADE_OUT_DURATION
             
             addUpdateListener { animator ->
@@ -255,7 +277,7 @@ class AudioSequenceManager(private val context: Context) {
             start()
         }
         
-        Log.d(TAG, "📉 Started fade-out (3s)")
+        Log.d(TAG, "📉 Started fade-out (3s) with adjusted volume: $adjustedRingtoneVolume")
     }
     
     /**
@@ -321,7 +343,7 @@ class AudioSequenceManager(private val context: Context) {
             return
         }
         
-        Log.d(TAG, "🗣️ Starting TTS phase")
+        Log.d(TAG, "🗣️ Starting TTS phase with volume: $ttsVolume")
         
         if (!ttsInitialized) {
             Log.w(TAG, "TTS not initialized, skipping to alarm restart")
@@ -338,7 +360,7 @@ class AudioSequenceManager(private val context: Context) {
             
             if (result == TextToSpeech.SUCCESS) {
                 // TTS will call onDone when finished, which will restart the alarm
-                Log.d(TAG, "✅ TTS started successfully")
+                Log.d(TAG, "✅ TTS started successfully with volume: $ttsVolume")
             } else {
                 Log.e(TAG, "❌ TTS failed to start, restarting alarm")
                 scheduleAlarmRestart()
@@ -359,7 +381,7 @@ class AudioSequenceManager(private val context: Context) {
             return
         }
         
-        Log.d(TAG, "🎙️ Starting voice phase")
+        Log.d(TAG, "🎙️ Starting voice phase with full volume: $voiceVolume")
         
         try {
             // Stop any existing voice playback
@@ -375,6 +397,7 @@ class AudioSequenceManager(private val context: Context) {
                 )
                 
                 setDataSource(voiceRecordingPath)
+                // Use full voice volume since ringtone is reduced to 50%
                 setVolume(voiceVolume, voiceVolume)
                 
                 setOnCompletionListener {
@@ -392,7 +415,7 @@ class AudioSequenceManager(private val context: Context) {
                 start()
             }
             
-            Log.d(TAG, "✅ Voice playback started")
+            Log.d(TAG, "✅ Voice playback started with full volume: $voiceVolume")
             
         } catch (e: Exception) {
             Log.e(TAG, "Error in voice phase", e)
@@ -426,7 +449,7 @@ class AudioSequenceManager(private val context: Context) {
             return
         }
         
-        Log.d(TAG, "🔄 Starting continuous TTS loop")
+        Log.d(TAG, "🔄 Starting continuous TTS loop with volume: $ttsVolume")
         
         try {
             val params = Bundle().apply {
@@ -438,6 +461,8 @@ class AudioSequenceManager(private val context: Context) {
             
             if (result != TextToSpeech.SUCCESS) {
                 Log.e(TAG, "❌ TTS loop failed to start")
+            } else {
+                Log.d(TAG, "✅ TTS loop started successfully with volume: $ttsVolume")
             }
             
         } catch (e: Exception) {

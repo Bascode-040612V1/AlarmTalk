@@ -437,7 +437,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:text="Version 1.0\n© 2025 Bascode and Team, Inc. All rights reserved.\nMade with &lt;3 for better mornings"
+                android:text="Version 1.0\n© 2025 Bascode and Team, Inc. All rights reserved.\nMade with ❤️ for better mornings"
                 android:textColor="@color/secondary_text"
                 android:textSize="14sp" />
 
