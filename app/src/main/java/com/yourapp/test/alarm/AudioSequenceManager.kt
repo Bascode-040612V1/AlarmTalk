@@ -106,9 +106,113 @@ class AudioSequenceManager(private val context: Context) {
         if (hasTtsOverlay && !ttsText.isNullOrBlank()) {
             Log.d(TAG, "🗣️ Starting TTS-only loop mode")
             startTtsLoop()
+        } 
+        // If voice overlay is enabled, play ringtone and voice simultaneously
+        else if (hasVoiceOverlay && !voiceRecordingPath.isNullOrEmpty()) {
+            Log.d(TAG, "🎙️ Starting simultaneous ringtone and voice overlay")
+            startRingtoneAndVoice()
         } else {
             // Otherwise, use the normal sequence starting with alarm
             startAlarmPhase()
+        }
+    }
+    
+    /**
+     * Play ringtone and voice overlay simultaneously
+     */
+    private fun startRingtoneAndVoice() {
+        if (!isPlaying) return
+        
+        Log.d(TAG, "🔔 Starting simultaneous ringtone and voice playback")
+        
+        try {
+            // Start ringtone with reduced volume (50% when voice overlay is active)
+            ringtonePlayer = MediaPlayer().apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                        .build()
+                )
+                
+                val uri = ringtoneUri ?: android.media.RingtoneManager.getDefaultUri(android.media.RingtoneManager.TYPE_ALARM)
+                setDataSource(context, uri)
+                
+                isLooping = true
+                // Reduce ringtone volume to 50% when voice overlay is active
+                val adjustedRingtoneVolume = ringtoneVolume * 0.5f
+                setVolume(adjustedRingtoneVolume, adjustedRingtoneVolume)
+                
+                prepare()
+                start()
+            }
+            
+            Log.d(TAG, "🔔 Ringtone started with 50% volume: ${ringtoneVolume * 0.5f}")
+            
+            // Start voice overlay with full volume
+            voicePlayer = MediaPlayer().apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                        .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                        .build()
+                )
+                
+                setDataSource(voiceRecordingPath)
+                // Use full voice volume
+                setVolume(voiceVolume, voiceVolume)
+                isLooping = true
+                
+                setOnCompletionListener {
+                    Log.d(TAG, "✅ Voice playback completed")
+                }
+                
+                setOnErrorListener { _, what, extra ->
+                    Log.e(TAG, "❌ Voice playback error: what=$what, extra=$extra")
+                    true
+                }
+                
+                prepare()
+                start()
+            }
+            
+            Log.d(TAG, "🎙️ Voice overlay started with full volume: $voiceVolume")
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "Error starting simultaneous ringtone and voice", e)
+            // Fallback to normal alarm phase if simultaneous playback fails
+            startAlarmPhase()
+        }
+    }
+    
+    /**
+     * Stop simultaneous ringtone and voice playback
+     */
+    private fun stopRingtoneAndVoice() {
+        try {
+            // Stop ringtone
+            ringtonePlayer?.let {
+                if (it.isPlaying) {
+                    it.stop()
+                }
+                it.release()
+            }
+            ringtonePlayer = null
+            
+            // Stop voice
+            voicePlayer?.let {
+                if (it.isPlaying) {
+                    it.stop()
+                }
+                it.release()
+            }
+            voicePlayer = null
+            
+            Log.d(TAG, "🔇 Stopped simultaneous ringtone and voice playback")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error stopping simultaneous ringtone and voice", e)
         }
     }
     
@@ -126,6 +230,7 @@ class AudioSequenceManager(private val context: Context) {
         stopVoicePhase()
         stopTtsPhase()
         stopTtsLoop()
+        stopRingtoneAndVoice() // Add this line to stop simultaneous playback
         
         // Cancel any pending sequence steps
         sequenceRunnable?.let { handler.removeCallbacks(it) }

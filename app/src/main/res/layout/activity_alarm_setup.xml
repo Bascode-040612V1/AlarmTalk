@@ -322,7 +322,7 @@
                                     android:layout_width="28dp"
                                     android:layout_height="28dp"
                                     android:src="@drawable/ic_music_note"
-                                    app:tint="@color/accent_red"
+                                    app:tint="@color/white"
                                     android:layout_marginEnd="12dp" />
 
                                 <LinearLayout
@@ -377,7 +377,7 @@
                                         android:layout_width="24dp"
                                         android:layout_height="24dp"
                                         android:src="@drawable/ic_volume_up"
-                                        app:tint="@color/accent_red"
+                                        app:tint="@color/white"
                                         android:layout_marginEnd="8dp" />
 
                                     <TextView
@@ -453,7 +453,7 @@
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:src="@drawable/ic_volume_up"
-                                    app:tint="@color/accent_red"
+                                    app:tint="@color/white"
                                     android:layout_marginEnd="8dp" />
 
                                 <TextView
@@ -548,7 +548,7 @@
                                         android:layout_width="24dp"
                                         android:layout_height="24dp"
                                         android:src="@drawable/ic_volume_up"
-                                        app:tint="@color/accent_red"
+                                        app:tint="@color/white"
                                         android:layout_marginEnd="8dp" />
 
                                     <TextView
@@ -625,7 +625,7 @@
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:src="@drawable/ic_settings"
-                                    app:tint="@color/accent_red"
+                                    app:tint="@color/white"
                                     android:layout_marginEnd="8dp" />
 
                                 <TextView
@@ -652,7 +652,7 @@
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:src="@drawable/ic_settings"
-                                    app:tint="@color/accent_red"
+                                    app:tint="@color/white"
                                     android:layout_marginEnd="12dp" />
 
                                 <TextView
@@ -685,7 +685,7 @@
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:src="@drawable/ic_snooze"
-                                    app:tint="@color/accent_red"
+                                    app:tint="@color/white"
                                     android:layout_marginEnd="12dp" />
 
                                 <TextView
@@ -740,7 +740,7 @@
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:src="@drawable/ic_settings"
-                                    app:tint="@color/accent_red"
+                                    app:tint="@color/white"
                                     android:layout_marginEnd="8dp" />
 
                                 <TextView
@@ -797,7 +797,7 @@
                                                 android:layout_width="24dp"
                                                 android:layout_height="24dp"
                                                 android:src="@drawable/ic_mic"
-                                                app:tint="@color/accent_red"
+                                                app:tint="@color/white"
                                                 android:layout_marginEnd="8dp" />
 
                                             <TextView
@@ -946,7 +946,7 @@
                                                     android:layout_width="24dp"
                                                     android:layout_height="24dp"
                                                     android:src="@drawable/ic_mic"
-                                                    app:tint="@color/accent_red"
+                                                    app:tint="@color/white"
                                                     android:layout_marginEnd="8dp" />
 
                                                 <TextView

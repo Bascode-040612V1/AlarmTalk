@@ -57,7 +57,8 @@
                 android:focusable="true"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="2dp"
-                app:rippleColor="@color/primary_color">
+                app:rippleColor="@color/primary_color"
+                app:cardBackgroundColor="@color/background_color">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -117,7 +118,8 @@
                 android:focusable="true"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="2dp"
-                app:rippleColor="@color/primary_color">
+                app:rippleColor="@color/primary_color"
+                app:cardBackgroundColor="@color/background_color">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -177,7 +179,8 @@
                 android:focusable="true"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="2dp"
-                app:rippleColor="@color/primary_color">
+                app:rippleColor="@color/primary_color"
+                app:cardBackgroundColor="@color/background_color">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -237,7 +240,8 @@
                 android:focusable="true"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="2dp"
-                app:rippleColor="@color/primary_color">
+                app:rippleColor="@color/primary_color"
+                app:cardBackgroundColor="@color/background_color">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -297,7 +301,8 @@
                 android:focusable="true"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="2dp"
-                app:rippleColor="@color/primary_color">
+                app:rippleColor="@color/primary_color"
+                app:cardBackgroundColor="@color/background_color">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -320,7 +325,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Visit Our Website"
                             android:textColor="@color/primary_text"
@@ -328,7 +333,7 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Learn more about AlarmTalk features and updates"
                             android:textColor="@color/secondary_text"

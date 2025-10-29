@@ -767,7 +767,7 @@ class AlarmSetupActivity : AppCompatActivity() {
             
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 // Delayed stop to allow for continued preview during adjustment
-                handler.postDelayed({ stopRingtonePreview() }, 1000)
+                handler.postDelayed({ stopRingtonePreview() }, 4000)
             }
         })
         
@@ -792,7 +792,7 @@ class AlarmSetupActivity : AppCompatActivity() {
             
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 // Delayed stop to allow for continued preview during adjustment
-                handler.postDelayed({ stopVoicePreview() }, 1000)
+                handler.postDelayed({ stopVoicePreview() }, 4000)
             }
         })
         
@@ -823,8 +823,8 @@ class AlarmSetupActivity : AppCompatActivity() {
             }
             
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // Stop any preview TTS
-                handler.postDelayed({ tts?.stop() }, 500)
+                // Stop any preview TTS after 4 seconds (as requested by user)
+                handler.postDelayed({ tts?.stop() }, 4000)
             }
         })
         
@@ -1129,10 +1129,10 @@ class AlarmSetupActivity : AppCompatActivity() {
                 
                 setOnPreparedListener {
                     start()
-                    // Stop after 2 seconds preview
+                    // Stop after 4 seconds preview (as requested by user)
                     Handler(Looper.getMainLooper()).postDelayed({
                         stopRingtonePreview()
-                    }, 2000)
+                    }, 4000)
                 }
                 
                 setOnErrorListener { _, _, _ ->
@@ -1192,10 +1192,10 @@ class AlarmSetupActivity : AppCompatActivity() {
                     
                     setOnPreparedListener {
                         start()
-                        // Stop after 2 seconds preview
+                        // Stop after 4 seconds preview (as requested by user)
                         Handler(Looper.getMainLooper()).postDelayed({
                             stopVoicePreview()
-                        }, 2000)
+                        }, 4000)
                     }
                     
                     setOnErrorListener { _, what, extra ->

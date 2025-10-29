@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
@@ -89,7 +90,8 @@ class AlarmScreenActivity : AppCompatActivity() {
     private var voiceVolume: Float = 1.0f
     private var ttsVolume: Float = 1.0f
     private var ttsVoice: String = "female" // Add this line for TTS voice selection
-
+    private var isDismissInitiatedByBroadcast = false
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
@@ -662,18 +664,24 @@ class AlarmScreenActivity : AppCompatActivity() {
         stopAlarmSound()
         stopBellAnimation()
         
-        // Create dismiss intent
-        val dismissIntent = Intent(this, AlarmReceiver::class.java).apply {
-            action = AlarmReceiver.ACTION_DISMISS
-            putExtra("ALARM_ID", alarmId)
-            putExtra("DISMISS_TIMESTAMP", System.currentTimeMillis())
-        }
-        
-        try {
-            sendBroadcast(dismissIntent)
-            Log.d("AlarmScreenActivity", "Dismiss broadcast sent successfully")
-        } catch (e: Exception) {
-            Log.e("AlarmScreenActivity", "Failed to send dismiss broadcast: ${e.message}")
+        // Only send broadcast if this dismiss was not initiated by the STOP_ALARM broadcast
+        // This prevents an infinite loop
+        if (!isDismissInitiatedByBroadcast) {
+            // Create dismiss intent
+            val dismissIntent = Intent(this, AlarmReceiver::class.java).apply {
+                action = AlarmReceiver.ACTION_DISMISS
+                putExtra("ALARM_ID", alarmId)
+                putExtra("DISMISS_TIMESTAMP", System.currentTimeMillis())
+            }
+            
+            try {
+                sendBroadcast(dismissIntent)
+                Log.d("AlarmScreenActivity", "Dismiss broadcast sent successfully")
+            } catch (e: Exception) {
+                Log.e("AlarmScreenActivity", "Failed to send dismiss broadcast: ${e.message}")
+            }
+        } else {
+            Log.d("AlarmScreenActivity", "Skipping dismiss broadcast as it was initiated by STOP_ALARM broadcast")
         }
         
         // Finish activity immediately for dismiss
@@ -837,13 +845,18 @@ class AlarmScreenActivity : AppCompatActivity() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == "STOP_ALARM") {
                     Log.d("AlarmScreenActivity", "Received stop alarm broadcast")
+                    isDismissInitiatedByBroadcast = true
                     dismissAlarm()
                 }
             }
         }
         
         val filter = IntentFilter("STOP_ALARM")
-        registerReceiver(stopAlarmReceiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(stopAlarmReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(stopAlarmReceiver, filter)
+        }
     }
     
     override fun onDestroy() {

@@ -224,18 +224,7 @@ class AlarmReceiver : BroadcastReceiver() {
         // Also cancel any potential snooze notifications
         notificationManager.cancel(alarmId + 10000)
         
-        // Stop the AlarmScreenActivity if it's running
-        val stopAlarmIntent = Intent(context, AlarmScreenActivity::class.java).apply {
-            action = "STOP_ALARM"
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        }
-        try {
-            context.startActivity(stopAlarmIntent)
-        } catch (e: Exception) {
-            Log.e("AlarmReceiver", "Could not stop AlarmScreenActivity via intent: ${e.message}")
-        }
-        
-        // Broadcast to stop any running alarm screen
+        // Broadcast to stop any running alarm screen (don't start a new one)
         val stopBroadcast = Intent("com.yourapp.test.alarm.STOP_ALARM").apply {
             setPackage(context.packageName) // Make intent explicit
             putExtra("ALARM_ID", alarmId)
