@@ -26,7 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:timePickerMode="spinner"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            style="@style/Widget.Alarm.TimePicker" />
 
         <!-- Title -->
         <TextView

@@ -143,6 +143,9 @@ class AlarmReceiver : BroadcastReceiver() {
         }
         context.sendBroadcast(stopBroadcast)
         
+        // Cancel any pending dismiss alarms for this alarm ID
+        cancelPendingDismissAlarms(context, alarmId)
+        
         // Schedule snooze alarm with ALL original data preserved
         val snoozeTime = Calendar.getInstance().apply {
             add(Calendar.MINUTE, snoozeMinutes)
@@ -234,6 +237,9 @@ class AlarmReceiver : BroadcastReceiver() {
         // Cancel any pending snooze alarms for this alarm ID
         cancelPendingSnoozeAlarms(context, alarmId)
         
+        // Cancel any pending dismiss alarms for this alarm ID
+        cancelPendingDismissAlarms(context, alarmId)
+        
         Log.d("AlarmReceiver", "Alarm $alarmId dismissed successfully")
     }
     
@@ -241,11 +247,13 @@ class AlarmReceiver : BroadcastReceiver() {
         try {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             
-            // Cancel the standard snooze alarm
-            val snoozeIntent = Intent(context, AlarmReceiver::class.java)
+            // Cancel the standard snooze alarm using the correct request code
+            val snoozeIntent = Intent(context, AlarmReceiver::class.java).apply {
+                action = ACTION_SNOOZE
+            }
             val snoozePendingIntent = PendingIntent.getBroadcast(
                 context, 
-                originalAlarmId + 10000, 
+                originalAlarmId * 10, // Use the same request code as the notification
                 snoozeIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
@@ -256,6 +264,33 @@ class AlarmReceiver : BroadcastReceiver() {
             Log.d("AlarmReceiver", "Cancelled pending snooze alarms for alarm ID: $originalAlarmId")
         } catch (e: Exception) {
             Log.e("AlarmReceiver", "Error cancelling snooze alarms: ${e.message}")
+        }
+    }
+    
+    /**
+     * Cancel any pending dismiss alarms for this alarm ID
+     */
+    private fun cancelPendingDismissAlarms(context: Context, alarmId: Int) {
+        try {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            
+            // Cancel the dismiss alarm using the correct request code
+            val dismissIntent = Intent(context, AlarmReceiver::class.java).apply {
+                action = ACTION_DISMISS
+            }
+            val dismissPendingIntent = PendingIntent.getBroadcast(
+                context, 
+                alarmId * 10 + 1, // Use the same request code as the notification
+                dismissIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            
+            alarmManager.cancel(dismissPendingIntent)
+            dismissPendingIntent.cancel()
+            
+            Log.d("AlarmReceiver", "Cancelled pending dismiss alarms for alarm ID: $alarmId")
+        } catch (e: Exception) {
+            Log.e("AlarmReceiver", "Error cancelling dismiss alarms: ${e.message}")
         }
     }
     
@@ -428,8 +463,9 @@ class AlarmReceiver : BroadcastReceiver() {
                 putExtra("HAS_VIBRATION", originalIntent.getBooleanExtra("HAS_VIBRATION", true))
             }
         }
+        // Use consistent and unique request code for snooze PendingIntent
         val snoozePendingIntent = PendingIntent.getBroadcast(
-            context, alarmId + 1000, snoozeIntent,
+            context, alarmId * 10, snoozeIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -438,8 +474,9 @@ class AlarmReceiver : BroadcastReceiver() {
             action = ACTION_DISMISS
             putExtra("ALARM_ID", alarmId)
         }
+        // Use consistent and unique request code for dismiss PendingIntent
         val dismissPendingIntent = PendingIntent.getBroadcast(
-            context, alarmId + 2000, dismissIntent,
+            context, alarmId * 10 + 1, dismissIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 

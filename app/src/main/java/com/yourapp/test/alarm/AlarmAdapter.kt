@@ -4,17 +4,23 @@ import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.Switch
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class AlarmAdapter(
-    private val alarmList: List<AlarmItem>,
+    private val alarmList: MutableList<AlarmItem>,
     private val onDeleteClick: (AlarmItem) -> Unit,
     private val onToggleClick: (AlarmItem, Boolean) -> Unit,
     private val onEditClick: (AlarmItem) -> Unit
 ) : RecyclerView.Adapter<AlarmAdapter.AlarmViewHolder>() {
+
+    // Multi-select mode variables
+    private var isMultiSelectMode = false
+    private val selectedAlarms = mutableSetOf<AlarmItem>()
+    private var multiSelectListener: (() -> Unit)? = null
 
     class AlarmViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val timeText: TextView = itemView.findViewById(R.id.textAlarmTime)
@@ -23,6 +29,7 @@ class AlarmAdapter(
         val ringtoneText: TextView = itemView.findViewById(R.id.textAlarmRingtone)
         val enableSwitch: Switch = itemView.findViewById(R.id.switchAlarmEnabled)
         val deleteButton: ImageButton = itemView.findViewById(R.id.buttonDeleteAlarm)
+        val selectCheckBox: CheckBox = itemView.findViewById(R.id.checkBoxSelectAlarm)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
@@ -43,16 +50,61 @@ class AlarmAdapter(
         holder.ringtoneText.text = alarm.ringtoneName
         holder.enableSwitch.isChecked = alarm.isEnabled
         
+        // Handle multi-select mode
+        if (isMultiSelectMode) {
+            holder.selectCheckBox.visibility = View.VISIBLE
+            holder.selectCheckBox.isChecked = selectedAlarms.contains(alarm)
+            holder.deleteButton.visibility = View.GONE
+            holder.enableSwitch.visibility = View.GONE
+        } else {
+            holder.selectCheckBox.visibility = View.GONE
+            holder.deleteButton.visibility = View.VISIBLE
+            holder.enableSwitch.visibility = View.VISIBLE
+        }
+        
         holder.enableSwitch.setOnCheckedChangeListener { _, isChecked ->
-            onToggleClick(alarm, isChecked)
+            if (!isMultiSelectMode) {
+                onToggleClick(alarm, isChecked)
+            }
         }
         
         holder.deleteButton.setOnClickListener {
-            onDeleteClick(alarm)
+            if (!isMultiSelectMode) {
+                onDeleteClick(alarm)
+            }
+        }
+        
+        holder.selectCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                selectedAlarms.add(alarm)
+            } else {
+                selectedAlarms.remove(alarm)
+            }
+            multiSelectListener?.invoke()
         }
         
         holder.itemView.setOnClickListener {
-            onEditClick(alarm)
+            if (isMultiSelectMode) {
+                // Toggle selection in multi-select mode
+                holder.selectCheckBox.isChecked = !holder.selectCheckBox.isChecked
+            } else {
+                // Edit alarm in normal mode
+                onEditClick(alarm)
+            }
+        }
+        
+        holder.itemView.setOnLongClickListener {
+            if (!isMultiSelectMode) {
+                // Enter multi-select mode on long press
+                isMultiSelectMode = true
+                selectedAlarms.add(alarm)
+                holder.selectCheckBox.isChecked = true
+                notifyDataSetChanged()
+                multiSelectListener?.invoke()
+                true
+            } else {
+                false
+            }
         }
     }
 
@@ -75,5 +127,33 @@ class AlarmAdapter(
             hour == 12 -> "12:$minute PM"
             else -> "${hour - 12}:$minute PM"
         }
+    }
+    
+    // Multi-select mode methods
+    fun isInMultiSelectMode(): Boolean = isMultiSelectMode
+    
+    fun getSelectedAlarms(): Set<AlarmItem> = selectedAlarms.toSet()
+    
+    fun exitMultiSelectMode() {
+        isMultiSelectMode = false
+        selectedAlarms.clear()
+        notifyDataSetChanged()
+    }
+    
+    fun setMultiSelectListener(listener: () -> Unit) {
+        multiSelectListener = listener
+    }
+    
+    fun selectAll() {
+        selectedAlarms.clear()
+        selectedAlarms.addAll(alarmList)
+        notifyDataSetChanged()
+        multiSelectListener?.invoke()
+    }
+    
+    fun deselectAll() {
+        selectedAlarms.clear()
+        notifyDataSetChanged()
+        multiSelectListener?.invoke()
     }
 }

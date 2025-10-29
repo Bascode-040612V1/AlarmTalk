@@ -8,7 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
@@ -27,6 +27,7 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ImageButton
+import android.widget.ScrollView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
@@ -56,6 +57,7 @@ class AlarmScreenActivity : AppCompatActivity() {
     private lateinit var textDate: TextView
     private lateinit var textTitle: TextView
     private lateinit var textNote: TextView
+    private lateinit var scrollNoteContainer: ScrollView
     private lateinit var imageAlarmBell: ImageView
     private lateinit var buttonSnooze: MaterialButton
     private lateinit var buttonDismiss: MaterialButton
@@ -197,9 +199,13 @@ class AlarmScreenActivity : AppCompatActivity() {
         textDate = findViewById(R.id.textDate)
         textTitle = findViewById(R.id.textTitle)
         textNote = findViewById(R.id.textNote)
+        scrollNoteContainer = findViewById(R.id.scrollNoteContainer)
         imageAlarmBell = findViewById(R.id.imageAlarmBell)
         buttonSnooze = findViewById(R.id.buttonSnooze)
         buttonDismiss = findViewById(R.id.buttonDismiss)
+        
+        // Start the animated bell
+        startAnimatedBell()
     }
 
     private fun setupUI() {
@@ -208,8 +214,10 @@ class AlarmScreenActivity : AppCompatActivity() {
         if (alarmNote.isNotEmpty()) {
             textNote.text = alarmNote
             textNote.visibility = View.VISIBLE
+            scrollNoteContainer.visibility = View.VISIBLE
         } else {
             textNote.visibility = View.GONE
+            scrollNoteContainer.visibility = View.GONE
         }
 
         buttonSnooze.text = "Snooze ($snoozeMinutes min)"
@@ -550,7 +558,21 @@ class AlarmScreenActivity : AppCompatActivity() {
         // Start the first TTS immediately
         handler.post(ttsRunnable)
     }
-
+    
+    private fun startAnimatedBell() {
+        try {
+            // For animated vector drawables, we need to start the animation explicitly
+            val drawable = imageAlarmBell.drawable
+            if (drawable is android.graphics.drawable.AnimatedVectorDrawable) {
+                drawable.start()
+            }
+        } catch (e: Exception) {
+            Log.e("AlarmScreenActivity", "Error starting animated bell", e)
+            // Fallback to the old animation if animated drawable fails
+            startBellAnimation()
+        }
+    }
+    
     private fun startBellAnimation() {
         // Cancel any existing animation
         bellAnimator?.cancel()
@@ -728,6 +750,14 @@ class AlarmScreenActivity : AppCompatActivity() {
     
     private fun stopBellAnimation() {
         try {
+            // Stop animated vector drawable if it's running
+            val drawable = imageAlarmBell.drawable
+            if (drawable is AnimatedVectorDrawable) {
+                // For AnimatedVectorDrawable, we don't need to explicitly stop it
+                // The animation will stop when the view is no longer visible
+            }
+            
+            // Stop the old bell animation if it was running
             bellAnimator?.cancel()
             bellAnimator = null
         } catch (e: Exception) {

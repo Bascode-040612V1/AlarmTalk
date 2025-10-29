@@ -25,16 +25,16 @@ class BatteryOptimizationManager(private val context: Context) {
      */
     @SuppressLint("BatteryLife")
     fun isBatteryOptimizationEnabled(): Boolean {
-        return try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-                !powerManager.isIgnoringBatteryOptimizations(context.packageName)
-            } else {
-                false // Battery optimization not available on older versions
-            }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return false // Battery optimization not available on older versions
+        }
+        
+        try {
+            val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+            return !powerManager.isIgnoringBatteryOptimizations(context.packageName)
         } catch (e: Exception) {
             Log.e(TAG, "Error checking battery optimization status", e)
-            true // Assume optimization is enabled if we can't check
+            return true // Assume optimization is enabled if we can't check
         }
     }
     

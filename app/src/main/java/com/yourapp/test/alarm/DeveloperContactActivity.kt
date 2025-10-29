@@ -1,5 +1,6 @@
 package com.yourapp.test.alarm
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -40,7 +41,7 @@ class DeveloperContactActivity : AppCompatActivity() {
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
-            title = "Contact Developers"
+            title = "Information"
         }
     }
     
@@ -73,17 +74,49 @@ class DeveloperContactActivity : AppCompatActivity() {
     
     private fun sendEmail() {
         try {
+            val email = getString(R.string.developer_email)
+            val subject = "Alarm App - Contact"
+            val body = "Hi developers,\n\nI'm reaching out regarding the Alarm App.\n\n"
+            
+            // Improved email intent with better compatibility across email clients
             val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:alarmtalk.support@proton.me")
-                putExtra(Intent.EXTRA_SUBJECT, "Alarm App - Contact")
-                putExtra(Intent.EXTRA_TEXT, "Hi developers,\n\nI'm reaching out regarding the Alarm App.\n\n")
+                data = Uri.parse("mailto:") // Only email apps should handle this
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+                putExtra(Intent.EXTRA_SUBJECT, subject)
+                putExtra(Intent.EXTRA_TEXT, body)
             }
             
-            // More robust intent handling
-            val chooser = Intent.createChooser(emailIntent, "Send email using...")
-            startActivity(chooser)
+            // Check if there's an app that can handle this intent
+            if (emailIntent.resolveActivity(packageManager) != null) {
+                startActivity(emailIntent)
+            } else {
+                // Fallback to ACTION_SEND if ACTION_SENDTO doesn't work
+                val fallbackIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+                    putExtra(Intent.EXTRA_SUBJECT, subject)
+                    putExtra(Intent.EXTRA_TEXT, body)
+                }
+                
+                // Try to create chooser with the fallback intent
+                val chooser = Intent.createChooser(fallbackIntent, "Send email using...")
+                startActivity(chooser)
+            }
         } catch (e: Exception) {
-            Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show()
+            // Ultimate fallback - try basic mailto URI
+            try {
+                val email = getString(R.string.developer_email)
+                val subject = "Alarm App - Contact"
+                val mailto = "mailto:$email?subject=${Uri.encode(subject)}&body=${Uri.encode("Hi developers,
+
+I'm reaching out regarding the Alarm App.
+
+")}"
+                val emailIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mailto))
+                startActivity(emailIntent)
+            } catch (fallbackEx: Exception) {
+                Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show()
+            }
         }
     }
     
@@ -102,45 +135,121 @@ class DeveloperContactActivity : AppCompatActivity() {
     
     private fun sendFeedback() {
         try {
-            val feedbackIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:alarmtalk.support@proton.me")
-                putExtra(Intent.EXTRA_SUBJECT, "Alarm App - Feedback")
-                putExtra(Intent.EXTRA_TEXT, "Hi team,\n\nI'd like to share feedback about the Alarm App:\n\n" +
+            val email = getString(R.string.developer_email)
+            val subject = "Alarm App - Feedback"
+            val body = "Hi team,\n\nI'd like to share feedback about the Alarm App:\n\n" +
+                    "What I like:\n\n" +
+                    "What could be improved:\n\n" +
+                    "Additional features I'd like to see:\n\n" +
+                    "Thanks for creating this app!"
+            
+            // Improved email intent with better compatibility across email clients
+            val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:") // Only email apps should handle this
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+                putExtra(Intent.EXTRA_SUBJECT, subject)
+                putExtra(Intent.EXTRA_TEXT, body)
+            }
+            
+            // Check if there's an app that can handle this intent
+            if (emailIntent.resolveActivity(packageManager) != null) {
+                startActivity(emailIntent)
+            } else {
+                // Fallback to ACTION_SEND if ACTION_SENDTO doesn't work
+                val fallbackIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+                    putExtra(Intent.EXTRA_SUBJECT, subject)
+                    putExtra(Intent.EXTRA_TEXT, body)
+                }
+                
+                // Try to create chooser with the fallback intent
+                val chooser = Intent.createChooser(fallbackIntent, "Send feedback using...")
+                startActivity(chooser)
+            }
+        } catch (e: Exception) {
+            // Ultimate fallback - try basic mailto URI
+            try {
+                val email = getString(R.string.developer_email)
+                val subject = "Alarm App - Feedback"
+                val mailto = "mailto:$email?subject=${Uri.encode(subject)}&body=${Uri.encode("Hi team,
+
+I'd like to share feedback about the Alarm App:
+
+" +
                         "What I like:\n\n" +
                         "What could be improved:\n\n" +
                         "Additional features I'd like to see:\n\n" +
-                        "Thanks for creating this app!")
+                        "Thanks for creating this app!")}"
+                val emailIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mailto))
+                startActivity(emailIntent)
+            } catch (fallbackEx: Exception) {
+                Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show()
             }
-            
-            // More robust intent handling
-            val chooser = Intent.createChooser(feedbackIntent, "Send feedback using...")
-            startActivity(chooser)
-        } catch (e: Exception) {
-            Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show()
         }
     }
     
     private fun reportBug() {
         try {
-            val bugReportIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:alarmtalk.support@proton.me")
-                putExtra(Intent.EXTRA_SUBJECT, "Alarm App - Bug Report")
-                putExtra(Intent.EXTRA_TEXT, "Hi developers,\n\nI found a bug in the Alarm App:\n\n" +
+            val email = getString(R.string.developer_email)
+            val subject = "Alarm App - Bug Report"
+            val body = "Hi developers,\n\nI found a bug in the Alarm App:\n\n" +
+                    "Steps to reproduce:\n1. \n2. \n3. \n\n" +
+                    "Expected behavior:\n\n" +
+                    "Actual behavior:\n\n" +
+                    "Device information:\n" +
+                    "- Android version: ${android.os.Build.VERSION.RELEASE}\n" +
+                    "- Device model: ${android.os.Build.MODEL}\n" +
+                    "- App version: 2.3\n\n" +
+                    "Additional notes:\n\n"
+            
+            // Improved email intent with better compatibility across email clients
+            val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:") // Only email apps should handle this
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+                putExtra(Intent.EXTRA_SUBJECT, subject)
+                putExtra(Intent.EXTRA_TEXT, body)
+            }
+            
+            // Check if there's an app that can handle this intent
+            if (emailIntent.resolveActivity(packageManager) != null) {
+                startActivity(emailIntent)
+            } else {
+                // Fallback to ACTION_SEND if ACTION_SENDTO doesn't work
+                val fallbackIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+                    putExtra(Intent.EXTRA_SUBJECT, subject)
+                    putExtra(Intent.EXTRA_TEXT, body)
+                }
+                
+                // Try to create chooser with the fallback intent
+                val chooser = Intent.createChooser(fallbackIntent, "Report bug using...")
+                startActivity(chooser)
+            }
+        } catch (e: Exception) {
+            // Ultimate fallback - try basic mailto URI
+            try {
+                val email = getString(R.string.developer_email)
+                val subject = "Alarm App - Bug Report"
+                val mailto = "mailto:$email?subject=${Uri.encode(subject)}&body=${Uri.encode("Hi developers,
+
+I found a bug in the Alarm App:
+
+" +
                         "Steps to reproduce:\n1. \n2. \n3. \n\n" +
                         "Expected behavior:\n\n" +
                         "Actual behavior:\n\n" +
                         "Device information:\n" +
                         "- Android version: ${android.os.Build.VERSION.RELEASE}\n" +
                         "- Device model: ${android.os.Build.MODEL}\n" +
-                        "- App version: 1.0\n\n" +
-                        "Additional notes:\n\n")
+                        "- App version: 2.3\n\n" +
+                        "Additional notes:\n\n")}"
+                val emailIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mailto))
+                startActivity(emailIntent)
+            } catch (fallbackEx: Exception) {
+                Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show()
             }
-            
-            // More robust intent handling
-            val chooser = Intent.createChooser(bugReportIntent, "Report bug using...")
-            startActivity(chooser)
-        } catch (e: Exception) {
-            Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show()
         }
     }
     

@@ -49,7 +49,7 @@
                         android:text="@string/time"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:textColor="@color/primary_text"
+                        android:textColor="@color/white"
                         android:layout_marginBottom="12dp" />
 
                     <TimePicker
@@ -57,7 +57,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:timePickerMode="spinner" />
+                        android:timePickerMode="spinner"
+                        style="@style/Widget.Alarm.TimePicker" />
 
                 </LinearLayout>
 
@@ -85,7 +86,7 @@
                         android:text="@string/alarm_details"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:textColor="@color/primary_text"
+                        android:textColor="@color/white"
                         android:layout_marginBottom="12dp" />
 
                     <!-- Title -->
@@ -94,8 +95,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         android:hint="@string/alarm_title"
-                        app:hintTextColor="@color/secondary_text"
-                        app:boxStrokeColor="@color/accent_red"
+                        app:hintTextColor="@color/white"
+                        app:boxStrokeColor="@color/white"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -103,7 +104,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/alarm_title"
-                            android:textColor="@color/primary_text"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white"
                             android:maxLines="1" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -142,7 +144,7 @@
                             android:text="@string/repeat_days"
                             android:textSize="20sp"
                             android:textStyle="bold"
-                            android:textColor="@color/primary_text" />
+                            android:textColor="@color/white" />
 
                         <Button
                             android:id="@+id/buttonEveryday"
@@ -288,7 +290,7 @@
                         android:text="@string/sound_settings"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:textColor="@color/primary_text"
+                        android:textColor="@color/white"
                         android:layout_marginBottom="12dp" />
 
                     <!-- Ringtone Selection -->
@@ -336,7 +338,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="@string/ringtone"
-                                        android:textColor="@color/primary_text"
+                                        android:textColor="@color/white"
                                         android:textSize="@dimen/text_size_large"
                                         android:textStyle="bold" />
 
@@ -345,7 +347,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="@string/default_ringtone"
-                                        android:textColor="@color/secondary_text"
+                                        android:textColor="@color/white"
                                         android:textSize="@dimen/text_size_medium" />
 
                                 </LinearLayout>
@@ -354,7 +356,7 @@
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:src="@drawable/ic_arrow_right"
-                                    app:tint="@color/secondary_text"
+                                    app:tint="@color/white"
                                     android:contentDescription="Select ringtone" />
 
                             </LinearLayout>
@@ -388,7 +390,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:text="@string/volume"
-                                        android:textColor="@color/primary_text"
+                                        android:textColor="@color/white"
                                         android:textSize="@dimen/text_size_medium"
                                         android:textStyle="bold" />
 
@@ -397,7 +399,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="80%"
-                                        android:textColor="@color/accent_red"
+                                        android:textColor="@color/white"
                                         android:textSize="14sp"
                                         android:textStyle="bold"
                                         android:minWidth="40dp"
@@ -411,14 +413,14 @@
                                     android:layout_height="wrap_content"
                                     android:max="100"
                                     android:progress="80"
-                                    android:progressTint="@color/accent_red"
-                                    android:thumbTint="@color/accent_red" />
+                                    android:progressTint="@color/white"
+                                    android:thumbTint="@color/white" />
 
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:text="@string/volume_safety_message"
-                                    android:textColor="@color/secondary_text"
+                                    android:textColor="@color/white"
                                     android:textSize="11sp"
                                     android:layout_marginTop="4dp"
                                     android:gravity="center" />
@@ -463,7 +465,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/text_to_speech"
-                                    android:textColor="@color/primary_text"
+                                    android:textColor="@color/white"
                                     android:textSize="@dimen/text_size_xlarge"
                                     android:textStyle="bold" />
 
@@ -473,7 +475,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/tts_message"
-                                android:textColor="@color/secondary_text"
+                                android:textColor="@color/white"
                                 android:textSize="@dimen/text_size_medium"
                                 android:layout_marginBottom="@dimen/spacing_large" />
 
@@ -483,15 +485,16 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="16dp"
                                 android:hint="@string/note_to_be_use_in_tts"
-                                app:hintTextColor="@color/secondary_text"
-                                app:boxStrokeColor="@color/accent_red"
+                                app:hintTextColor="@color/white"
+                                app:boxStrokeColor="@color/white"
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id="@+id/editTextNote"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textColor="@color/primary_text"
+                                    android:textColor="@color/white"
+                                    android:textColorHint="@color/white"
                                     android:maxLines="2" />
 
                             </com.google.android.material.textfield.TextInputLayout>
@@ -517,14 +520,15 @@
                                     android:textSize="14sp"
                                     android:minHeight="48dp"
                                     app:icon="@drawable/ic_volume_up"
-                                    app:iconGravity="textStart" />
+                                    app:iconGravity="textStart"
+                                    app:iconTint="@color/white" />
 
                                 <com.google.android.material.switchmaterial.SwitchMaterial
                                     android:id="@+id/switchTtsOverlay"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/enable"
-                                    android:textColor="@color/primary_text"
+                                    android:textColor="@color/white"
                                     android:textSize="14sp"
                                     android:enabled="false" />
 
@@ -560,7 +564,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:text="@string/tts_volume"
-                                        android:textColor="@color/primary_text"
+                                        android:textColor="@color/white"
                                         android:textSize="14sp"
                                         android:textStyle="bold" />
 
@@ -569,7 +573,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="100%"
-                                        android:textColor="@color/accent_red"
+                                        android:textColor="@color/white"
                                         android:textSize="14sp"
                                         android:textStyle="bold"
                                         android:minWidth="40dp"
@@ -584,14 +588,14 @@
                                     android:max="100"
                                     android:progress="100"
                                     android:enabled="false"
-                                    android:progressTint="@color/accent_red"
-                                    android:thumbTint="@color/accent_red" />
+                                    android:progressTint="@color/white"
+                                    android:thumbTint="@color/white" />
 
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:text="@string/tts_level_message"
-                                    android:textColor="@color/secondary_text"
+                                    android:textColor="@color/white"
                                     android:textSize="11sp"
                                     android:layout_marginTop="4dp"
                                     android:gravity="center" />
@@ -637,7 +641,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/general_settings"
-                                    android:textColor="@color/primary_text"
+                                    android:textColor="@color/white"
                                     android:textSize="18sp"
                                     android:textStyle="bold" />
 
@@ -666,7 +670,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:text="@string/vibration"
-                                    android:textColor="@color/primary_text"
+                                    android:textColor="@color/white"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
 
@@ -700,7 +704,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:text="@string/snooze_duration"
-                                    android:textColor="@color/primary_text"
+                                    android:textColor="@color/white"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
 
@@ -756,7 +760,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:text="Advanced Options"
-                                    android:textColor="@color/primary_text"
+                                    android:textColor="@color/white"
                                     android:textSize="18sp"
                                     android:textStyle="bold" />
 
@@ -765,7 +769,7 @@
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:src="@drawable/ic_arrow_right"
-                                    app:tint="@color/secondary_text"
+                                    app:tint="@color/white"
                                     android:rotation="90" />
 
                             </LinearLayout>
@@ -813,7 +817,7 @@
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
                                                 android:text="@string/voice_overlay"
-                                                android:textColor="@color/primary_text"
+                                                android:textColor="@color/white"
                                                 android:textSize="18sp"
                                                 android:textStyle="bold" />
 
@@ -824,7 +828,7 @@
                                             android:layout_height="wrap_content"
                                             android:layout_marginBottom="16dp"
                                             android:text="@string/record_voice_message"
-                                            android:textColor="@color/secondary_text"
+                                            android:textColor="@color/white"
                                             android:textSize="14sp" />
 
                                         <!-- Voice Recording Controls -->
@@ -849,7 +853,8 @@
                                                 android:minHeight="48dp"
                                                 app:icon="@drawable/ic_mic"
                                                 app:iconGravity="textStart"
-                                                app:iconSize="16dp" />
+                                                app:iconSize="16dp"
+                                                app:iconTint="@color/white" />
 
                                             <Button
                                                 android:id="@+id/buttonPlayVoice"
@@ -860,13 +865,14 @@
                                                 android:background="@android:color/transparent"
                                                 android:enabled="false"
                                                 android:text="@string/play"
-                                                android:textColor="@color/accent_red"
+                                                android:textColor="@color/white"
                                                 android:textSize="14sp"
                                                 android:minWidth="80dp"
                                                 android:minHeight="48dp"
                                                 app:icon="@drawable/ic_music_note"
                                                 app:iconGravity="textStart"
-                                                app:iconSize="16dp" />
+                                                app:iconSize="16dp"
+                                                app:iconTint="@color/white" />
 
                                             <Button
                                                 android:id="@+id/buttonDeleteVoice"
@@ -878,7 +884,7 @@
                                                 android:minHeight="48dp"
                                                 android:text=""
                                                 app:icon="@drawable/ic_delete"
-                                                app:iconTint="@color/delete_color"
+                                                app:iconTint="@color/white"
                                                 app:iconGravity="textStart"
                                                 app:iconSize="24dp" />
 
@@ -897,7 +903,7 @@
                                                 android:layout_height="wrap_content"
                                                 android:background="?android:attr/selectableItemBackground"
                                                 android:minWidth="200dp"
-                                                android:textColor="@color/accent_red"
+                                                android:textColor="@color/white"
                                                 android:textOff="@string/show_voice_history"
                                                 android:textOn="@string/hide_voice_history"
                                                 android:textSize="14sp"
@@ -920,7 +926,7 @@
                                                 android:layout_marginEnd="16dp"
                                                 android:layout_weight="1"
                                                 android:text="@string/no_voice_recording"
-                                                android:textColor="@color/secondary_text"
+                                                android:textColor="@color/white"
                                                 android:textSize="14sp" />
 
                                             <com.google.android.material.switchmaterial.SwitchMaterial
@@ -929,7 +935,7 @@
                                                 android:layout_height="wrap_content"
                                                 android:enabled="false"
                                                 android:text="@string/enable"
-                                                android:textColor="@color/primary_text"
+                                                android:textColor="@color/white"
                                                 android:textSize="14sp" />
 
                                         </LinearLayout>
@@ -964,7 +970,7 @@
                                                     android:layout_height="wrap_content"
                                                     android:layout_weight="1"
                                                     android:text="@string/voice_volume"
-                                                    android:textColor="@color/primary_text"
+                                                    android:textColor="@color/white"
                                                     android:textSize="14sp"
                                                     android:textStyle="bold" />
 
@@ -973,7 +979,7 @@
                                                     android:layout_width="wrap_content"
                                                     android:layout_height="wrap_content"
                                                     android:text="100%"
-                                                    android:textColor="@color/accent_red"
+                                                    android:textColor="@color/white"
                                                     android:textSize="14sp"
                                                     android:textStyle="bold"
                                                     android:minWidth="40dp"
@@ -988,14 +994,14 @@
                                                 android:max="100"
                                                 android:progress="100"
                                                 android:enabled="false"
-                                                android:progressTint="@color/accent_red"
-                                                android:thumbTint="@color/accent_red" />
+                                                android:progressTint="@color/white"
+                                                android:thumbTint="@color/white" />
 
                                             <TextView
                                                 android:layout_width="match_parent"
                                                 android:layout_height="wrap_content"
                                                 android:text="@string/voice_clarity_message"
-                                                android:textColor="@color/secondary_text"
+                                                android:textColor="@color/white"
                                                 android:textSize="11sp"
                                                 android:layout_marginTop="4dp"
                                                 android:gravity="center" />

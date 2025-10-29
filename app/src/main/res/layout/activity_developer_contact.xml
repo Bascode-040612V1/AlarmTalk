@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_small"
             android:gravity="center"
-            android:text="Get in Touch"
+            android:text="Instructions"
             android:textColor="@color/primary_text"
             android:textSize="@dimen/text_size_massive"
             android:textStyle="bold" />
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_xlarge"
             android:gravity="center"
-            android:text="We'd love to hear from you! Choose how you'd like to contact us."
+            android:text="How to use the Alarm App"
             android:textColor="@color/secondary_text"
             android:textSize="@dimen/text_size_large" />
 
@@ -57,6 +57,116 @@
             android:orientation="vertical"
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
+
+            <!-- App Instructions Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:text="App Features &amp; Usage Guide"
+                android:textColor="@color/primary_text"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- Instructions Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:clickable="false"
+                android:focusable="false"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/background_color">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Creating Alarms"
+                        android:textColor="@color/primary_text"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• Tap the + button on the main screen to create a new alarm\n• Set your desired time using the time picker\n• Add a title and optional note for your alarm\n• Choose repeat days if you want a recurring alarm\n• Select a snooze duration (default is 10 minutes)"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="16dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Customizing Sounds"
+                        android:textColor="@color/primary_text"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• Select from default ringtones or choose a custom ringtone\n• Record your own voice message to play with the alarm\n• Enable Text-to-Speech to have your note read aloud\n• Adjust volume levels for ringtone, voice, and TTS separately\n• Enable vibration for additional notification"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="16dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Managing Alarms"
+                        android:textColor="@color/primary_text"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• Toggle alarms on/off using the switch\n• Edit existing alarms by tapping on them\n• Delete alarms by swiping or using the delete button\n• View all your alarms on the main screen"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="16dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Advanced Features"
+                        android:textColor="@color/primary_text"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• Voice Overlay: Play a recorded message along with your ringtone\n• TTS Overlay: Have your alarm note read aloud\n• Custom Volume Controls: Set different volume levels for different sounds\n• Battery Optimization: App automatically manages battery usage for reliable alarms"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Contact Section Header -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:text="Contact Information"
+                android:textColor="@color/primary_text"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <!-- Email Contact Card -->
             <com.google.android.material.card.MaterialCardView
@@ -82,7 +192,7 @@
                         android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/spacing_large"
-                        android:src="@drawable/ic_alarm"
+                        android:src="@drawable/ic_email"
                         app:tint="@color/primary_color"
                         android:contentDescription="Email icon" />
 
@@ -121,69 +231,6 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- GitHub Repository Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardGithub"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="2dp"
-                app:rippleColor="@color/primary_color"
-                app:cardBackgroundColor="@color/background_color">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="16dp"
-                        android:src="@drawable/ic_developer_contact"
-                        app:tint="@color/primary_color"
-                        android:contentDescription="GitHub icon" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="View Source Code"
-                            android:textColor="@color/primary_text"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Check out our GitHub repository"
-                            android:textColor="@color/secondary_text"
-                            android:textSize="14sp" />
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_arrow_right"
-                        app:tint="@color/secondary_text"
-                        android:contentDescription="Navigate to GitHub repository" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
             <!-- Feedback Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardFeedback"
@@ -208,7 +255,7 @@
                         android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="16dp"
-                        android:src="@drawable/ic_music_note"
+                        android:src="@drawable/ic_message"
                         app:tint="@color/primary_color"
                         android:contentDescription="Feedback icon" />
 
@@ -271,7 +318,7 @@
                         android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="16dp"
-                        android:src="@drawable/ic_delete"
+                        android:src="@drawable/ic_bug"
                         app:tint="@color/accent_red"
                         android:contentDescription="Bug report icon" />
 
@@ -315,7 +362,7 @@
                 android:id="@+id/cardWebsite"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="12dp"
                 android:clickable="true"
                 android:focusable="true"
                 app:cardCornerRadius="8dp"
@@ -334,7 +381,7 @@
                         android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="16dp"
-                        android:src="@drawable/ic_developer_contact"
+                        android:src="@drawable/ic_globe"
                         app:tint="@color/primary_color"
                         android:contentDescription="Website icon" />
 
@@ -368,6 +415,69 @@
                         android:src="@drawable/ic_arrow_right"
                         app:tint="@color/secondary_text"
                         android:contentDescription="Navigate to website" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- GitHub Repository Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardGithub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                app:rippleColor="@color/primary_color"
+                app:cardBackgroundColor="@color/background_color">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="16dp"
+                        android:src="@drawable/ic_folder"
+                        app:tint="@color/primary_color"
+                        android:contentDescription="GitHub icon" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="View Source Code"
+                            android:textColor="@color/primary_text"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Check out our GitHub repository"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="@color/secondary_text"
+                        android:contentDescription="Navigate to GitHub repository" />
 
                 </LinearLayout>
 
@@ -463,7 +573,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:text="Version 1.2\n© 2025 Bascode and Team, Inc. All rights reserved.\nMade with ❤️ for better mornings"
+                android:text="Version 2.3\n© 2025 Bascode and Team, Inc. All rights reserved.\nMade with ❤️ for better mornings"
                 android:textColor="@color/secondary_text"
                 android:textSize="14sp" />
 

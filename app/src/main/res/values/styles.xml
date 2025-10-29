@@ -95,4 +95,13 @@
         <item name="android:elevation">4dp</item>
     </style>
     
+    <!-- Custom TimePicker Style to ensure white numbers -->
+    <style name="Widget.Alarm.TimePicker" parent="android:Widget.Material.TimePicker">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:colorControlNormal">@color/white</item>
+        <item name="android:colorControlActivated">@color/white</item>
+    </style>
+    
 </resources>

@@ -167,6 +167,12 @@ class AudioSequenceManager(private val context: Context) {
                 
                 setOnCompletionListener {
                     Log.d(TAG, "✅ Voice playback completed")
+                    // Restart voice playback if still playing
+                    if (isPlaying) {
+                        handler.postDelayed({
+                            restartVoiceOverlay()
+                        }, 100) // Small delay before restarting
+                    }
                 }
                 
                 setOnErrorListener { _, what, extra ->
@@ -760,6 +766,77 @@ class AudioSequenceManager(private val context: Context) {
      * Check if currently in alarm phase
      */
     fun isInAlarmPhase(): Boolean = isInAlarmPhase
+    
+    /**
+     * Restart voice overlay playback
+     */
+    private fun restartVoiceOverlay() {
+        if (!isPlaying || voiceRecordingPath.isNullOrEmpty()) return
+        
+        Log.d(TAG, "🔄 Restarting voice overlay")
+        
+        try {
+            // Stop any existing voice playback
+            voicePlayer?.let {
+                if (it.isPlaying) {
+                    it.stop()
+                }
+                it.release()
+            }
+            voicePlayer = null
+            
+            // Start voice overlay with full volume
+            voicePlayer = MediaPlayer().apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                        .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                        .build()
+                )
+                
+                setDataSource(voiceRecordingPath)
+                // Use full voice volume
+                setVolume(voiceVolume, voiceVolume)
+                isLooping = true
+                
+                setOnCompletionListener {
+                    Log.d(TAG, "✅ Voice playback completed")
+                    // Restart voice playback if still playing
+                    if (isPlaying) {
+                        handler.postDelayed({
+                            restartVoiceOverlay()
+                        }, 100) // Small delay before restarting
+                    }
+                }
+                
+                setOnErrorListener { _, what, extra ->
+                    Log.e(TAG, "❌ Voice playback error: what=$what, extra=$extra")
+                    // Try to restart if still playing
+                    if (isPlaying) {
+                        handler.postDelayed({
+                            restartVoiceOverlay()
+                        }, 1000) // Longer delay before retrying
+                    }
+                    true
+                }
+                
+                prepare()
+                start()
+            }
+            
+            Log.d(TAG, "✅ Voice overlay restarted with full volume: $voiceVolume")
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "Error restarting voice overlay", e)
+            // Try to restart if still playing
+            if (isPlaying) {
+                handler.postDelayed({
+                    restartVoiceOverlay()
+                }, 1000) // Longer delay before retrying
+            }
+        }
+    }
 }
 
 // Extension function for ValueAnimator

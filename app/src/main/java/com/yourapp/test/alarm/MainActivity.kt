@@ -16,10 +16,13 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.text.format.DateFormat
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yourapp.test.alarm.databinding.ActivityMainBinding
@@ -38,6 +41,9 @@ class MainActivity : AppCompatActivity() {
     // Background service connection
     private var backgroundService: BackgroundOptimizationService? = null
     private var isServiceBound = false
+    
+    // Action mode for multi-select
+    private var actionMode: ActionMode? = null
     
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -140,7 +146,7 @@ class MainActivity : AppCompatActivity() {
             openAlarmSetupActivity()
         }
         
-        // Info button (contact developers)
+        // Info button (information)
         binding.buttonInfo.setOnClickListener {
             openDeveloperContact()
         }
@@ -180,10 +186,84 @@ class MainActivity : AppCompatActivity() {
             onToggleClick = { alarm, isEnabled -> toggleAlarm(alarm, isEnabled) },
             onEditClick = { alarm -> editAlarm(alarm) }
         )
+        
+        // Set up multi-select listener
+        alarmAdapter.setMultiSelectListener {
+            updateMultiSelectMode()
+        }
+        
         binding.recyclerViewAlarms.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = alarmAdapter
         }
+    }
+    
+    private fun updateMultiSelectMode() {
+        if (alarmAdapter.isInMultiSelectMode()) {
+            if (actionMode == null) {
+                actionMode = startSupportActionMode(object : ActionMode.Callback {
+                    override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+                        menu.add("Delete").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                        menu.add("Select All").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                        binding.toolbar.visibility = android.view.View.VISIBLE
+                        return true
+                    }
+
+                    override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
+                        val selectedCount = alarmAdapter.getSelectedAlarms().size
+                        binding.textSelectedCount.text = "$selectedCount selected"
+                        return false
+                    }
+
+                    override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+                        return when (item.title) {
+                            "Delete" -> {
+                                deleteSelectedAlarms()
+                                true
+                            }
+                            "Select All" -> {
+                                if (alarmAdapter.getSelectedAlarms().size == alarmList.size) {
+                                    alarmAdapter.deselectAll()
+                                } else {
+                                    alarmAdapter.selectAll()
+                                }
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+
+                    override fun onDestroyActionMode(mode: ActionMode) {
+                        alarmAdapter.exitMultiSelectMode()
+                        actionMode = null
+                        binding.toolbar.visibility = android.view.View.GONE
+                    }
+                })
+            }
+            actionMode?.invalidate()
+        } else {
+            actionMode?.finish()
+            binding.toolbar.visibility = android.view.View.GONE
+        }
+    }
+    
+    private fun deleteSelectedAlarms() {
+        val selectedAlarms = alarmAdapter.getSelectedAlarms()
+        if (selectedAlarms.isEmpty()) return
+        
+        AlertDialog.Builder(this)
+            .setTitle("Delete Alarms")
+            .setMessage("Are you sure you want to delete ${selectedAlarms.size} alarm(s)?")
+            .setPositiveButton("Delete") { _, _ ->
+                selectedAlarms.forEach { alarm ->
+                    deleteAlarm(alarm)
+                }
+                alarmAdapter.exitMultiSelectMode()
+                actionMode?.finish()
+                Toast.makeText(this, "${selectedAlarms.size} alarm(s) deleted", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
     
     private fun openAlarmSetupActivity(existingAlarm: AlarmItem? = null) {
@@ -422,7 +502,7 @@ class MainActivity : AppCompatActivity() {
         alarmAdapter.notifyDataSetChanged()
         
         saveAlarms()
-        Toast.makeText(this, "Alarm deleted", Toast.LENGTH_SHORT).show()
+        // Toast message is handled in deleteSelectedAlarms or individual delete
     }
     
     private fun cancelAlarmSchedule(alarmItem: AlarmItem) {
@@ -552,31 +632,42 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun loadSavedAlarms() {
-        val savedAlarms = alarmStorage.loadAlarms()
-        alarmList.clear()
-        alarmList.addAll(savedAlarms)
-        
-        // Reschedule enabled alarms
-        savedAlarms.filter { it.isEnabled }.forEach { alarm ->
-            scheduleAlarm(alarm)
+        try {
+            val savedAlarms = alarmStorage.loadAlarms()
+            alarmList.clear()
+            alarmList.addAll(savedAlarms)
+            alarmList.sortBy { it.time }
+            
+            // Update UI
+            if (alarmList.isEmpty()) {
+                binding.textEmptyState.visibility = android.view.View.VISIBLE
+                binding.recyclerViewAlarms.visibility = android.view.View.GONE
+            } else {
+                binding.textEmptyState.visibility = android.view.View.GONE
+                binding.recyclerViewAlarms.visibility = android.view.View.VISIBLE
+                alarmAdapter.notifyDataSetChanged()
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error loading saved alarms", e)
+            Toast.makeText(this, "Error loading alarms", Toast.LENGTH_SHORT).show()
         }
     }
     
     private fun saveAlarms() {
-        alarmStorage.saveAlarms(alarmList)
-    }
-    
-    override fun onPause() {
-        super.onPause()
-        saveAlarms()
-    }
-    
-    override fun onDestroy() {
-        super.onDestroy()
-        // Unbind service when activity is destroyed
-        if (isServiceBound) {
-            unbindService(serviceConnection)
-            isServiceBound = false
+        try {
+            alarmStorage.saveAlarms(alarmList)
+            
+            // Update UI
+            if (alarmList.isEmpty()) {
+                binding.textEmptyState.visibility = android.view.View.VISIBLE
+                binding.recyclerViewAlarms.visibility = android.view.View.GONE
+            } else {
+                binding.textEmptyState.visibility = android.view.View.GONE
+                binding.recyclerViewAlarms.visibility = android.view.View.VISIBLE
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error saving alarms", e)
+            Toast.makeText(this, "Error saving alarms", Toast.LENGTH_SHORT).show()
         }
     }
     
@@ -584,15 +675,21 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
                 AlertDialog.Builder(this)
-                    .setTitle("Display Over Other Apps Permission")
-                    .setMessage("This app needs permission to display alarms over other apps (like when you're watching videos or using other apps). This ensures your alarms will always be visible when they trigger.")
+                    .setTitle("Display Over Other Apps")
+                    .setMessage("This permission is required to show the alarm screen when your device is locked.")
                     .setPositiveButton("Grant Permission") { _, _ ->
-                        val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
-                        startActivity(intent)
+                        try {
+                            val intent = Intent(
+                                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                Uri.parse("package:$packageName")
+                            )
+                            startActivity(intent)
+                        } catch (e: Exception) {
+                            Toast.makeText(this, "Unable to open overlay settings", Toast.LENGTH_SHORT).show()
+                        }
                     }
                     .setNegativeButton("Skip") { dialog, _ ->
                         dialog.dismiss()
-                        Toast.makeText(this, "Alarms may not display properly over other apps", Toast.LENGTH_LONG).show()
                     }
                     .setCancelable(false)
                     .show()
@@ -659,6 +756,15 @@ class MainActivity : AppCompatActivity() {
             Log.d("MainActivity", "Fallback repeating alarm scheduled for ${getDayName(dayOfWeek)} at ${alarmItem.time}")
         } catch (e: Exception) {
             Log.e("MainActivity", "Fallback repeating alarm scheduling failed for ${getDayName(dayOfWeek)}", e)
+        }
+    }
+    
+    override fun onBackPressed() {
+        if (alarmAdapter.isInMultiSelectMode()) {
+            alarmAdapter.exitMultiSelectMode()
+            actionMode?.finish()
+        } else {
+            super.onBackPressed()
         }
     }
 }

@@ -36,7 +36,7 @@
     <string name="default_ringtone">Default</string>
     <string name="custom_ringtone">Custom Ringtone</string>
     <string name="no_ringtone_selected">No ringtone selected</string>
-    <string name="developer_contact">Developer Contact</string>
+    <string name="developer_contact">Information</string>
     <string name="developer_info">For support and inquiries, please contact:</string>
     <string name="developer_email">alarmtalk.support@proton.me</string>
     <string name="developer_phone">+1 (555) 123-4567</string>
