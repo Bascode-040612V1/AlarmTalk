@@ -2,7 +2,22 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Alarm" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/accent_red</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="android:colorBackground">@color/background_color</item>
+        <item name="colorOnBackground">@color/primary_text</item>
+        <item name="colorSurface">@color/card_background</item>
+        <item name="colorOnSurface">@color/primary_text</item>
+        
+        <!-- Apply unified styles -->
+        <item name="materialButtonStyle">@style/Widget.Alarm.Button</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.Alarm.Button.OutlinedButton</item>
+        <item name="materialCardViewStyle">@style/Widget.Alarm.CardView</item>
+        <item name="chipStyle">@style/Widget.Alarm.Chip</item>
+        <item name="switchStyle">@style/Widget.Alarm.Switch</item>
+        <item name="toolbarStyle">@style/Widget.Alarm.Toolbar</item>
     </style>
 
     <style name="Theme.Alarm" parent="Base.Theme.Alarm" />

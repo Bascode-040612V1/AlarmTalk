@@ -18,6 +18,7 @@ import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.text.format.DateFormat
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import android.widget.AdapterView
@@ -27,6 +28,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
@@ -1050,22 +1053,56 @@ class AlarmSetupActivity : AppCompatActivity() {
             // Sort files by last modified (newest first)
             val sortedFiles = voiceFiles.sortedByDescending { it.lastModified() }
             
-            // Create display names for the files
-            val fileNames = sortedFiles.map { file ->
-                val timestamp = java.text.SimpleDateFormat("MMM dd, HH:mm", java.util.Locale.getDefault())
-                    .format(java.util.Date(file.lastModified()))
-                "Voice from $timestamp"
-            }.toTypedArray()
+            // Create voice recording objects with sequential naming (Voice 1, Voice 2, etc.)
+            val voiceRecordings = sortedFiles.mapIndexed { index, file ->
+                val dateFormat = java.text.SimpleDateFormat("MMM dd, yyyy HH:mm", java.util.Locale.getDefault())
+                val date = dateFormat.format(java.util.Date(file.lastModified()))
+                
+                // Calculate duration
+                val durationMs = VoiceRecordingManager(this).getRecordingDuration(file.absolutePath)
+                val duration = String.format("%02d:%02d", durationMs / 60000, (durationMs % 60000) / 1000)
+                
+                VoiceRecording(file, "Voice ${index + 1}", date, "Duration: $duration")
+            }
             
-            // Show selection dialog
-            AlertDialog.Builder(this)
-                .setTitle("Select Recorded Voice")
-                .setItems(fileNames) { _, which ->
-                    val selectedFile = sortedFiles[which]
-                    selectVoiceFile(selectedFile)
+            // Create and show modern dialog
+            val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_voice_selection, null)
+            val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerViewVoiceList)
+            val buttonCancel = dialogView.findViewById<Button>(R.id.buttonCancel)
+            val buttonSelect = dialogView.findViewById<Button>(R.id.buttonSelect)
+            
+            val adapter = VoiceRecordingAdapter(voiceRecordings, 
+                onItemClick = { /* Handle item selection */ },
+                onPlayClick = { voiceRecording ->
+                    // Play the selected voice recording
+                    VoiceRecordingManager(this).playRecording(voiceRecording.file.absolutePath)
                 }
-                .setNegativeButton("Cancel", null)
-                .show()
+            )
+            
+            recyclerView.layoutManager = LinearLayoutManager(this)
+            recyclerView.adapter = adapter
+            
+            val dialog = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create()
+            
+            buttonCancel.setOnClickListener {
+                VoiceRecordingManager(this).stopPlayback()
+                dialog.dismiss()
+            }
+            
+            buttonSelect.setOnClickListener {
+                val selectedRecording = adapter.getSelectedRecording()
+                if (selectedRecording != null) {
+                    selectVoiceFile(selectedRecording.file)
+                    VoiceRecordingManager(this).stopPlayback()
+                    dialog.dismiss()
+                } else {
+                    Toast.makeText(this, "Please select a voice recording", Toast.LENGTH_SHORT).show()
+                }
+            }
+            
+            dialog.show()
                 
         } catch (e: Exception) {
             Log.e("AlarmSetupActivity", "Error showing voice history dialog", e)

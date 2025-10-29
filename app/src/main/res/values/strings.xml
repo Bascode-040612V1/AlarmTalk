@@ -38,7 +38,7 @@
     <string name="no_ringtone_selected">No ringtone selected</string>
     <string name="developer_contact">Developer Contact</string>
     <string name="developer_info">For support and inquiries, please contact:</string>
-    <string name="developer_email">joshuapaviabasco.1@proton.me</string>
+    <string name="developer_email">alarmtalk.support@proton.me</string>
     <string name="developer_phone">+1 (555) 123-4567</string>
     <string name="developer_website">https://joshua.is-great.net/?i=1</string>
     <string name="back">Back</string>
@@ -98,4 +98,5 @@
     <string name="action_settings">Action Settings</string>
     <string name="first_fragment_label">First Fragment Label</string>
     <string name="second_fragment_label">Second Fragment Label</string>
+    <string name="select">Select</string>
 </resources>

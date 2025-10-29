@@ -177,7 +177,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="?attr/selectableItemBackground"
+            android:background="@drawable/ringtone_box_background"
             android:padding="12dp"
             android:gravity="center_vertical">
 

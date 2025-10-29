@@ -74,7 +74,7 @@ class DeveloperContactActivity : AppCompatActivity() {
     private fun sendEmail() {
         try {
             val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:joshuapaviabasco@proton.me")
+                data = Uri.parse("mailto:alarmtalk.support@proton.me")
                 putExtra(Intent.EXTRA_SUBJECT, "Alarm App - Contact")
                 putExtra(Intent.EXTRA_TEXT, "Hi developers,\n\nI'm reaching out regarding the Alarm App.\n\n")
             }
@@ -103,7 +103,7 @@ class DeveloperContactActivity : AppCompatActivity() {
     private fun sendFeedback() {
         try {
             val feedbackIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:joshuapaviabasco@proton.me")
+                data = Uri.parse("mailto:alarmtalk.support@proton.me")
                 putExtra(Intent.EXTRA_SUBJECT, "Alarm App - Feedback")
                 putExtra(Intent.EXTRA_TEXT, "Hi team,\n\nI'd like to share feedback about the Alarm App:\n\n" +
                         "What I like:\n\n" +
@@ -123,7 +123,7 @@ class DeveloperContactActivity : AppCompatActivity() {
     private fun reportBug() {
         try {
             val bugReportIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:joshuapaviabasco@proton.me")
+                data = Uri.parse("mailto:alarmtalk.support@proton.me")
                 putExtra(Intent.EXTRA_SUBJECT, "Alarm App - Bug Report")
                 putExtra(Intent.EXTRA_TEXT, "Hi developers,\n\nI found a bug in the Alarm App:\n\n" +
                         "Steps to reproduce:\n1. \n2. \n3. \n\n" +

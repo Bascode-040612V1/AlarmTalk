@@ -313,17 +313,18 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:padding="8dp"
-                                android:background="?android:attr/selectableItemBackground"
+                                android:padding="@dimen/spacing_small"
+                                android:background="@drawable/ringtone_box_background"
                                 android:gravity="center_vertical"
-                                android:layout_marginBottom="12dp">
+                                android:layout_marginBottom="@dimen/spacing_medium">
 
                                 <ImageView
                                     android:layout_width="28dp"
                                     android:layout_height="28dp"
                                     android:src="@drawable/ic_music_note"
                                     app:tint="@color/white"
-                                    android:layout_marginEnd="12dp" />
+                                    android:layout_marginEnd="@dimen/spacing_medium"
+                                    android:contentDescription="Ringtone icon" />
 
                                 <LinearLayout
                                     android:layout_width="0dp"
@@ -336,7 +337,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="@string/ringtone"
                                         android:textColor="@color/primary_text"
-                                        android:textSize="16sp"
+                                        android:textSize="@dimen/text_size_large"
                                         android:textStyle="bold" />
 
                                     <TextView
@@ -345,7 +346,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="@string/default_ringtone"
                                         android:textColor="@color/secondary_text"
-                                        android:textSize="14sp" />
+                                        android:textSize="@dimen/text_size_medium" />
 
                                 </LinearLayout>
 
@@ -353,7 +354,8 @@
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:src="@drawable/ic_arrow_right"
-                                    app:tint="@color/secondary_text" />
+                                    app:tint="@color/secondary_text"
+                                    android:contentDescription="Select ringtone" />
 
                             </LinearLayout>
 
@@ -363,8 +365,8 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
                                 android:background="@drawable/card_gradient_background"
-                                android:padding="12dp"
-                                android:layout_marginTop="8dp">
+                                android:padding="@dimen/spacing_medium"
+                                android:layout_marginTop="@dimen/spacing_small">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
@@ -378,7 +380,8 @@
                                         android:layout_height="24dp"
                                         android:src="@drawable/ic_volume_up"
                                         app:tint="@color/white"
-                                        android:layout_marginEnd="8dp" />
+                                        android:layout_marginEnd="8dp"
+                                        android:contentDescription="Ringtone volume icon" />
 
                                     <TextView
                                         android:layout_width="0dp"
@@ -386,7 +389,7 @@
                                         android:layout_weight="1"
                                         android:text="@string/volume"
                                         android:textColor="@color/primary_text"
-                                        android:textSize="14sp"
+                                        android:textSize="@dimen/text_size_medium"
                                         android:textStyle="bold" />
 
                                     <TextView
@@ -447,21 +450,21 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
                                 android:gravity="center_vertical"
-                                android:layout_marginBottom="8dp">
+                                android:layout_marginBottom="@dimen/spacing_small">
 
                                 <ImageView
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:src="@drawable/ic_volume_up"
                                     app:tint="@color/white"
-                                    android:layout_marginEnd="8dp" />
+                                    android:layout_marginEnd="@dimen/spacing_small" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/text_to_speech"
                                     android:textColor="@color/primary_text"
-                                    android:textSize="18sp"
+                                    android:textSize="@dimen/text_size_xlarge"
                                     android:textStyle="bold" />
 
                             </LinearLayout>
@@ -471,8 +474,8 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/tts_message"
                                 android:textColor="@color/secondary_text"
-                                android:textSize="14sp"
-                                android:layout_marginBottom="16dp" />
+                                android:textSize="@dimen/text_size_medium"
+                                android:layout_marginBottom="@dimen/spacing_large" />
 
                             <!-- Note to be used in TTS -->
                             <com.google.android.material.textfield.TextInputLayout
@@ -549,7 +552,8 @@
                                         android:layout_height="24dp"
                                         android:src="@drawable/ic_volume_up"
                                         app:tint="@color/white"
-                                        android:layout_marginEnd="8dp" />
+                                        android:layout_marginEnd="8dp"
+                                        android:contentDescription="TTS volume icon" />
 
                                     <TextView
                                         android:layout_width="0dp"
@@ -626,7 +630,8 @@
                                     android:layout_height="24dp"
                                     android:src="@drawable/ic_settings"
                                     app:tint="@color/white"
-                                    android:layout_marginEnd="8dp" />
+                                    android:layout_marginEnd="8dp"
+                                    android:contentDescription="Settings icon" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -653,7 +658,8 @@
                                     android:layout_height="24dp"
                                     android:src="@drawable/ic_settings"
                                     app:tint="@color/white"
-                                    android:layout_marginEnd="12dp" />
+                                    android:layout_marginEnd="12dp"
+                                    android:contentDescription="Vibration settings icon" />
 
                                 <TextView
                                     android:layout_width="0dp"
@@ -686,7 +692,8 @@
                                     android:layout_height="24dp"
                                     android:src="@drawable/ic_snooze"
                                     app:tint="@color/white"
-                                    android:layout_marginEnd="12dp" />
+                                    android:layout_marginEnd="12dp"
+                                    android:contentDescription="Snooze duration icon" />
 
                                 <TextView
                                     android:layout_width="0dp"
@@ -741,7 +748,8 @@
                                     android:layout_height="24dp"
                                     android:src="@drawable/ic_settings"
                                     app:tint="@color/white"
-                                    android:layout_marginEnd="8dp" />
+                                    android:layout_marginEnd="8dp"
+                                    android:contentDescription="Advanced options icon" />
 
                                 <TextView
                                     android:layout_width="0dp"
@@ -798,7 +806,8 @@
                                                 android:layout_height="24dp"
                                                 android:src="@drawable/ic_mic"
                                                 app:tint="@color/white"
-                                                android:layout_marginEnd="8dp" />
+                                                android:layout_marginEnd="8dp"
+                                                android:contentDescription="Voice recording icon" />
 
                                             <TextView
                                                 android:layout_width="wrap_content"
@@ -947,7 +956,8 @@
                                                     android:layout_height="24dp"
                                                     android:src="@drawable/ic_mic"
                                                     app:tint="@color/white"
-                                                    android:layout_marginEnd="8dp" />
+                                                    android:layout_marginEnd="8dp"
+                                                    android:contentDescription="Voice volume icon" />
 
                                                 <TextView
                                                     android:layout_width="0dp"

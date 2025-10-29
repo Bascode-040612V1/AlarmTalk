@@ -32,7 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="07:30"
-                    android:textSize="28sp"
+                    android:textSize="@dimen/text_size_massive"
                     android:textColor="@color/primary_text"
                     android:fontFamily="monospace"
                     android:textStyle="bold" />
@@ -42,9 +42,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="@dimen/spacing_medium"
                     android:text="Alarm"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/text_size_large"
                     android:textColor="@color/primary_text"
                     android:textStyle="bold"
                     android:maxLines="1"
@@ -56,21 +56,21 @@
                 android:id="@+id/textAlarmRepeat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/spacing_micro"
                 android:text="Once"
-                android:textSize="14sp"
+                android:textSize="@dimen/text_size_medium"
                 android:textColor="@color/secondary_text" />
 
             <TextView
                 android:id="@+id/textAlarmRingtone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="@dimen/spacing_micro"
                 android:text="Default"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_size_small"
                 android:textColor="@color/secondary_text"
                 android:drawableStart="@drawable/ic_music"
-                android:drawablePadding="4dp"
+                android:drawablePadding="@dimen/spacing_micro"
                 android:gravity="center_vertical" />
 
         </LinearLayout>
@@ -92,7 +92,7 @@
                 android:id="@+id/buttonDeleteAlarm"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/spacing_small"
                 android:src="@drawable/ic_delete"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Delete alarm"

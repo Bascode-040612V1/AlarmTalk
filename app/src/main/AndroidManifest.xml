@@ -68,6 +68,11 @@
                 <action android:name="com.yourapp.test.alarm.DISMISS" />
             </intent-filter>
         </receiver>
+        
+        <service
+            android:name=".BackgroundOptimizationService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

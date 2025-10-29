@@ -19,16 +19,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="@dimen/spacing_xlarge"
             android:background="@drawable/time_background"
-            android:padding="24dp">
+            android:padding="@dimen/text_size_xxxlarge">
 
             <TextView
                 android:id="@+id/textCurrentTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:00:00"
-                android:textSize="48sp"
+                android:textSize="@dimen/text_size_huge"
                 android:textColor="@color/primary_text"
                 android:fontFamily="monospace"
                 android:textStyle="bold" />
@@ -38,9 +38,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Today"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_size_large"
                 android:textColor="@color/secondary_text"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="@dimen/spacing_small" />
 
         </LinearLayout>
 
@@ -50,14 +50,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/spacing_large">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Your Alarms"
-                android:textSize="20sp"
+                android:textSize="@dimen/text_size_xxlarge"
                 android:textColor="@color/primary_text"
                 android:textStyle="bold" />
 
@@ -101,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/spacing_large"
         android:src="@drawable/ic_add"
         app:backgroundTint="@color/fab_color"
         app:tint="@android:color/white" />

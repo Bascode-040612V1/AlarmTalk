@@ -3,23 +3,25 @@ package com.yourapp.test.alarm
 import android.Manifest
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.os.PowerManager
 import android.provider.Settings
 import android.text.format.DateFormat
-import android.widget.Toast
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import android.app.Activity
 import com.yourapp.test.alarm.databinding.ActivityMainBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,6 +32,28 @@ class MainActivity : AppCompatActivity() {
     private lateinit var alarmAdapter: AlarmAdapter
     private val alarmList = mutableListOf<AlarmItem>()
     private lateinit var alarmStorage: AlarmStorage
+    private lateinit var batteryOptimizationManager: BatteryOptimizationManager
+    private lateinit var efficientAlarmManager: EfficientAlarmManager
+    
+    // Background service connection
+    private var backgroundService: BackgroundOptimizationService? = null
+    private var isServiceBound = false
+    
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as BackgroundOptimizationService.LocalBinder
+            backgroundService = binder.getService()
+            isServiceBound = true
+            Log.d("MainActivity", "Background optimization service connected")
+        }
+        
+        override fun onServiceDisconnected(name: ComponentName?) {
+            isServiceBound = false
+            backgroundService = null
+            Log.d("MainActivity", "Background optimization service disconnected")
+        }
+    }
+    
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -83,12 +107,29 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         
         alarmStorage = AlarmStorage(this)
+        batteryOptimizationManager = BatteryOptimizationManager(this)
+        efficientAlarmManager = EfficientAlarmManager(this)
+        
         loadSavedAlarms()
         
         setupUI()
         setupRecyclerView()
         requestPermissions()
         checkOverlayPermission()
+        
+        // Start and bind background optimization service
+        startBackgroundOptimizationService()
+    }
+    
+    private fun startBackgroundOptimizationService() {
+        try {
+            val intent = Intent(this, BackgroundOptimizationService::class.java)
+            startService(intent)
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+            Log.d("MainActivity", "Background optimization service started and bound")
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error starting background optimization service", e)
+        }
     }
     
     private fun setupUI() {
@@ -528,6 +569,15 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         saveAlarms()
+    }
+    
+    override fun onDestroy() {
+        super.onDestroy()
+        // Unbind service when activity is destroyed
+        if (isServiceBound) {
+            unbindService(serviceConnection)
+            isServiceBound = false
+        }
     }
     
     private fun checkOverlayPermission() {
