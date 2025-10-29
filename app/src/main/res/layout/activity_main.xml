@@ -44,7 +44,7 @@
 
         </LinearLayout>
 
-        <!-- Alarms Title with Add Button -->
+        <!-- Alarms Title with Info Button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,13 +62,13 @@
                 android:textStyle="bold" />
 
             <ImageButton
-                android:id="@+id/buttonAddAlarm"
+                android:id="@+id/buttonInfo"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_add"
-                android:contentDescription="Add Alarm"
-                app:tint="@color/accent_red" />
+                android:src="@drawable/ic_info"
+                android:contentDescription="Contact Developers"
+                app:tint="@color/accent_blue" />
 
         </LinearLayout>
 
@@ -87,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="No alarms set\nTap + to add an alarm"
+            android:text="No alarms set"
             android:textSize="16sp"
             android:textColor="@color/secondary_text"
             android:gravity="center"
@@ -95,8 +95,7 @@
 
     </LinearLayout>
 
-    <!-- Remove the FAB since we're using the inline button now -->
-    <!--
+    <!-- Floating Action Button for Adding Alarms -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddAlarm"
         android:layout_width="wrap_content"
@@ -106,6 +105,5 @@
         android:src="@drawable/ic_add"
         app:backgroundTint="@color/fab_color"
         app:tint="@android:color/white" />
-    -->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

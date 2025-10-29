@@ -15,16 +15,17 @@ import java.util.*
 
 /**
  * Manages sequential audio playback for alarms with fade effects
- * Sequence: Alarm (2s fade-in + 3s full + 2s fade-out) -> TTS/Voice -> Repeat
+ * Sequence: Alarm plays for 6 seconds (2s fade-in + 4s full volume) -> Fade out for 3 seconds -> TTS/Voice -> Repeat
  */
 class AudioSequenceManager(private val context: Context) {
     
     companion object {
         private const val TAG = "AudioSequenceManager"
         private const val FADE_IN_DURATION = 2000L // 2 seconds
-        private const val FULL_VOLUME_DURATION = 3000L // 3 seconds
-        private const val FADE_OUT_DURATION = 2000L // 2 seconds
-        private const val TOTAL_ALARM_DURATION = FADE_IN_DURATION + FULL_VOLUME_DURATION + FADE_OUT_DURATION // 7 seconds
+        private const val FULL_VOLUME_DURATION = 4000L // 4 seconds (changed from 3s to 4s)
+        private const val FADE_OUT_DURATION = 3000L // 3 seconds (changed from 2s to 3s)
+        private const val TOTAL_ALARM_DURATION = FADE_IN_DURATION + FULL_VOLUME_DURATION + FADE_OUT_DURATION // 9 seconds
+        private const val ALARM_PHASE_DURATION = 6000L // 6 seconds total (2s fade-in + 4s full volume)
     }
     
     // Audio players
@@ -100,7 +101,15 @@ class AudioSequenceManager(private val context: Context) {
         sequenceStep = 0
         
         Log.d(TAG, "🎵 Starting audio sequence")
-        startAlarmPhase()
+        
+        // If TTS overlay is enabled, start TTS loop directly
+        if (hasTtsOverlay && !ttsText.isNullOrBlank()) {
+            Log.d(TAG, "🗣️ Starting TTS-only loop mode")
+            startTtsLoop()
+        } else {
+            // Otherwise, use the normal sequence starting with alarm
+            startAlarmPhase()
+        }
     }
     
     /**
@@ -116,6 +125,7 @@ class AudioSequenceManager(private val context: Context) {
         stopAlarmPhase()
         stopVoicePhase()
         stopTtsPhase()
+        stopTtsLoop()
         
         // Cancel any pending sequence steps
         sequenceRunnable?.let { handler.removeCallbacks(it) }
@@ -128,7 +138,7 @@ class AudioSequenceManager(private val context: Context) {
     private fun startAlarmPhase() {
         if (!isPlaying) return
         
-        Log.d(TAG, "🔔 Starting alarm phase (7s total)")
+        Log.d(TAG, "🔔 Starting alarm phase (6s total, then fade out for 3s)")
         isInAlarmPhase = true
         
         try {
@@ -163,55 +173,62 @@ class AudioSequenceManager(private val context: Context) {
             
             // Start fade-in effect
             startFadeIn()
-            } catch (e: Exception) {
-                Log.e(TAG, "Error starting alarm phase", e)
-                // Skip to next phase if alarm fails
-                scheduleNextPhase()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error starting alarm phase", e)
+            // Skip to next phase if alarm fails
+            scheduleNextPhase()
+        }
+    }
+    
+    /**
+     * Create fade-in effect for alarm
+     */
+    private fun startFadeIn() {
+        fadeAnimator?.cancel()
+        
+        fadeAnimator = ValueAnimator.ofFloat(0f, ringtoneVolume).apply {
+            duration = FADE_IN_DURATION
+            
+            addUpdateListener { animator ->
+                val volume = animator.animatedValue as Float
+                ringtonePlayer?.setVolume(volume, volume)
             }
+            
+            addListener(object : android.animation.AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: android.animation.Animator) {
+                    // After fade-in, maintain full volume for 3 seconds
+                    scheduleFullVolumePhase()
+                }
+            })
+            
+            start()
         }
         
-        /**
-         * Create fade-in effect for alarm
-         */
-        private fun startFadeIn() {
-            fadeAnimator?.cancel()
-            
-            fadeAnimator = ValueAnimator.ofFloat(0f, ringtoneVolume).apply {
-                duration = FADE_IN_DURATION
-                
-                addUpdateListener { animator ->
-                    val volume = animator.animatedValue as Float
-                    ringtonePlayer?.setVolume(volume, volume)
-                }
-                
-                addListener(object : android.animation.AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: android.animation.Animator) {
-                        // After fade-in, maintain full volume for 3 seconds
-                        scheduleFullVolumePhase()
-                    }
-                })
-                
-                start()
-            }
-            
-            Log.d(TAG, "📈 Started fade-in (2s)")
-        }
-    
+        Log.d(TAG, "📈 Started fade-in (2s)")
+    }
+
     /**
      * Schedule the full volume phase
      */
     private fun scheduleFullVolumePhase() {
         if (!isPlaying) return
         
-        Log.d(TAG, "🔊 Full volume phase (3s)")
+        Log.d(TAG, "🔊 Full volume phase (4s)")
         
         // Ensure full volume
         ringtonePlayer?.setVolume(ringtoneVolume, ringtoneVolume)
         
-        // Schedule fade-out after 3 seconds
+        // Schedule fade-out after 4 seconds of full volume (6 seconds total)
         handler.postDelayed({
             if (isPlaying && isInAlarmPhase) {
                 startFadeOut()
+                // After fade-out completes (3 seconds), stop alarm and proceed to next phase
+                handler.postDelayed({
+                    if (isPlaying && isInAlarmPhase) {
+                        stopRingtone()
+                        scheduleNextPhase()
+                    }
+                }, FADE_OUT_DURATION)
             }
         }, FULL_VOLUME_DURATION)
     }
@@ -231,15 +248,28 @@ class AudioSequenceManager(private val context: Context) {
             }
             
             doOnEnd {
-                // After fade-out, stop alarm and move to next phase
-                stopRingtone()
-                scheduleNextPhase()
+                // After fade-out completes
+                Log.d(TAG, "🎵 Fade-out completed")
             }
             
             start()
         }
         
-        Log.d(TAG, "📉 Started fade-out (2s)")
+        Log.d(TAG, "📉 Started fade-out (3s)")
+    }
+    
+    /**
+     * Reduce alarm volume to 50% at 6 seconds
+     */
+    // This method is no longer used in the current implementation
+    private fun reduceVolumeToHalf() {
+        if (!isPlaying || !isInAlarmPhase) return
+        
+        Log.d(TAG, "🔉 Reducing volume to 50% at 6 seconds")
+        
+        // Set volume to 50% of the original ringtone volume
+        val halfVolume = ringtoneVolume * 0.5f
+        ringtonePlayer?.setVolume(halfVolume, halfVolume)
     }
     
     /**
@@ -253,12 +283,22 @@ class AudioSequenceManager(private val context: Context) {
         // Determine which phase to play next
         when {
             hasTtsOverlay && !ttsText.isNullOrBlank() -> {
-                Log.d(TAG, "🗣️ Moving to TTS phase")
-                startTtsPhase()
+                Log.d(TAG, "🗣️ Moving to TTS phase after fade-out")
+                // Delay TTS by 1 second after fade-out completes
+                handler.postDelayed({
+                    if (isPlaying) {
+                        startTtsPhase()
+                    }
+                }, 1000)
             }
             hasVoiceOverlay && !voiceRecordingPath.isNullOrEmpty() -> {
-                Log.d(TAG, "🎙️ Moving to voice phase")
-                startVoicePhase()
+                Log.d(TAG, "🎙️ Moving to voice phase after fade-out")
+                // Delay voice by 1 second after fade-out completes
+                handler.postDelayed({
+                    if (isPlaying) {
+                        startVoicePhase()
+                    }
+                }, 1000)
             }
             else -> {
                 Log.d(TAG, "🔄 No TTS/Voice configured, restarting alarm phase")
@@ -273,7 +313,7 @@ class AudioSequenceManager(private val context: Context) {
     }
     
     /**
-     * Start the TTS phase
+     * Start the TTS phase (in sequence mode)
      */
     private fun startTtsPhase() {
         if (!isPlaying || ttsText.isNullOrBlank()) {
@@ -378,6 +418,45 @@ class AudioSequenceManager(private val context: Context) {
     }
     
     /**
+     * Start continuous TTS loop (when TTS overlay is enabled)
+     */
+    private fun startTtsLoop() {
+        if (!isPlaying || ttsText.isNullOrBlank() || !ttsInitialized) {
+            Log.e(TAG, "Cannot start TTS loop - missing required components")
+            return
+        }
+        
+        Log.d(TAG, "🔄 Starting continuous TTS loop")
+        
+        try {
+            val params = Bundle().apply {
+                putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, ttsVolume)
+            }
+            
+            // Speak the text continuously
+            val result = tts?.speak(ttsText, TextToSpeech.QUEUE_FLUSH, params, "alarm_tts_loop")
+            
+            if (result != TextToSpeech.SUCCESS) {
+                Log.e(TAG, "❌ TTS loop failed to start")
+            }
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "Error starting TTS loop", e)
+        }
+    }
+    
+    /**
+     * Stop continuous TTS loop
+     */
+    private fun stopTtsLoop() {
+        try {
+            tts?.stop()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error stopping TTS loop", e)
+        }
+    }
+    
+    /**
      * Initialize TTS engine
      */
     private fun initializeTts() {
@@ -413,7 +492,7 @@ class AudioSequenceManager(private val context: Context) {
                             Log.w(TAG, "TTS language not fully supported")
                         }
                         
-                        // Set completion listener to restart alarm after TTS
+                        // Set completion listener to handle both sequence mode and loop mode
                         ttsEngine.setOnUtteranceProgressListener(object : android.speech.tts.UtteranceProgressListener() {
                             override fun onStart(utteranceId: String?) {
                                 Log.d(TAG, "🗣️ TTS started: $utteranceId")
@@ -421,14 +500,37 @@ class AudioSequenceManager(private val context: Context) {
                             
                             override fun onDone(utteranceId: String?) {
                                 Log.d(TAG, "✅ TTS completed: $utteranceId")
-                                if (utteranceId == "alarm_sequence_tts") {
-                                    scheduleAlarmRestart()
+                                when (utteranceId) {
+                                    "alarm_sequence_tts" -> {
+                                        // In sequence mode, restart the alarm after TTS
+                                        scheduleAlarmRestart()
+                                    }
+                                    "alarm_tts_loop" -> {
+                                        // In loop mode, restart the TTS if still playing
+                                        if (isPlaying && hasTtsOverlay) {
+                                            handler.postDelayed({
+                                                startTtsLoop()
+                                            }, 500) // Small delay before restarting
+                                        }
+                                    }
                                 }
                             }
                             
                             override fun onError(utteranceId: String?) {
                                 Log.e(TAG, "❌ TTS error: $utteranceId")
-                                scheduleAlarmRestart()
+                                when (utteranceId) {
+                                    "alarm_sequence_tts" -> {
+                                        scheduleAlarmRestart()
+                                    }
+                                    "alarm_tts_loop" -> {
+                                        // In loop mode, try to restart the TTS if still playing
+                                        if (isPlaying && hasTtsOverlay) {
+                                            handler.postDelayed({
+                                                startTtsLoop()
+                                            }, 1000) // Longer delay before retrying
+                                        }
+                                    }
+                                }
                             }
                         })
                         

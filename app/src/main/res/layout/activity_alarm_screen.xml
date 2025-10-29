@@ -6,22 +6,6 @@
     android:background="@drawable/gradient_background"
     android:padding="24dp">
 
-    <!-- Developer Contact Button (Upper Right) -->
-    <ImageButton
-        android:id="@+id/buttonDeveloperContact"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Contact Developers"
-        android:padding="8dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_developer_contact"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/secondary_text" />
-
     <!-- Time Display -->
     <TextView
         android:id="@+id/textTime"
@@ -60,7 +44,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textDate"
-        app:tint="@color/accent_red" />
+        app:tint="@color/accent_blue" />
 
     <!-- Alarm Title -->
     <TextView

@@ -50,12 +50,17 @@ class DeveloperContactActivity : AppCompatActivity() {
         binding.cardBugReport.setOnClickListener {
             reportBug()
         }
+        
+        // Website
+        binding.cardWebsite.setOnClickListener {
+            openWebsite()
+        }
     }
     
     private fun sendEmail() {
         try {
             val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:developer@alarmapp.com")
+                data = Uri.parse("mailto:joshuapaviabasco@proton.me")
                 putExtra(Intent.EXTRA_SUBJECT, "Alarm App - Contact")
                 putExtra(Intent.EXTRA_TEXT, "Hi developers,\n\nI'm reaching out regarding the Alarm App.\n\n")
             }
@@ -73,7 +78,7 @@ class DeveloperContactActivity : AppCompatActivity() {
     private fun openGitHub() {
         try {
             val githubIntent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse("https://github.com/Bascode-040612V1/Alarm-app")
+                data = Uri.parse("https://github.com/Bascode-040612V1/AlarmTalk")
             }
             
             if (githubIntent.resolveActivity(packageManager) != null) {
@@ -89,7 +94,7 @@ class DeveloperContactActivity : AppCompatActivity() {
     private fun sendFeedback() {
         try {
             val feedbackIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:feedback@alarmapp.com")
+                data = Uri.parse("mailto:joshuapaviabasco@proton.me")
                 putExtra(Intent.EXTRA_SUBJECT, "Alarm App - Feedback")
                 putExtra(Intent.EXTRA_TEXT, "Hi team,\n\nI'd like to share feedback about the Alarm App:\n\n" +
                         "What I like:\n\n" +
@@ -111,7 +116,7 @@ class DeveloperContactActivity : AppCompatActivity() {
     private fun reportBug() {
         try {
             val bugReportIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:bugs@alarmapp.com")
+                data = Uri.parse("mailto:joshuapaviabasco@proton.me")
                 putExtra(Intent.EXTRA_SUBJECT, "Alarm App - Bug Report")
                 putExtra(Intent.EXTRA_TEXT, "Hi developers,\n\nI found a bug in the Alarm App:\n\n" +
                         "Steps to reproduce:\n1. \n2. \n3. \n\n" +
@@ -131,6 +136,22 @@ class DeveloperContactActivity : AppCompatActivity() {
             }
         } catch (e: Exception) {
             Toast.makeText(this, "Unable to send bug report", Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    private fun openWebsite() {
+        try {
+            val websiteIntent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse("https://alarmtalk.is-best.net/AlarmTalk_Website")
+            }
+            
+            if (websiteIntent.resolveActivity(packageManager) != null) {
+                startActivity(websiteIntent)
+            } else {
+                Toast.makeText(this, "No browser app found", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Unable to open website", Toast.LENGTH_SHORT).show()
         }
     }
     

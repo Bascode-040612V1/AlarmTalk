@@ -58,7 +58,6 @@ class AlarmScreenActivity : AppCompatActivity() {
     private lateinit var imageAlarmBell: ImageView
     private lateinit var buttonSnooze: MaterialButton
     private lateinit var buttonDismiss: MaterialButton
-    private lateinit var buttonDeveloperContact: ImageButton
 
     private var mediaPlayer: MediaPlayer? = null
     private var voiceMediaPlayer: MediaPlayer? = null
@@ -199,7 +198,6 @@ class AlarmScreenActivity : AppCompatActivity() {
         imageAlarmBell = findViewById(R.id.imageAlarmBell)
         buttonSnooze = findViewById(R.id.buttonSnooze)
         buttonDismiss = findViewById(R.id.buttonDismiss)
-        buttonDeveloperContact = findViewById(R.id.buttonDeveloperContact)
     }
 
     private fun setupUI() {
@@ -220,10 +218,6 @@ class AlarmScreenActivity : AppCompatActivity() {
         
         buttonDismiss.setOnClickListener {
             dismissAlarm()
-        }
-        
-        buttonDeveloperContact.setOnClickListener {
-            openDeveloperContact()
         }
         
         updateTimeAndDate()

@@ -94,9 +94,14 @@ class MainActivity : AppCompatActivity() {
     private fun setupUI() {
         updateCurrentTime()
         
-        // Use the new inline add button instead of the FAB
-        binding.buttonAddAlarm.setOnClickListener {
+        // Use the FAB for adding alarms
+        binding.fabAddAlarm.setOnClickListener {
             openAlarmSetupActivity()
+        }
+        
+        // Info button (contact developers)
+        binding.buttonInfo.setOnClickListener {
+            openDeveloperContact()
         }
         
         // Update time every second
@@ -542,6 +547,20 @@ class MainActivity : AppCompatActivity() {
                     .setCancelable(false)
                     .show()
             }
+        }
+    }
+    
+    /**
+     * Opens the developer contact screen
+     */
+    private fun openDeveloperContact() {
+        try {
+            Log.d("MainActivity", "Opening developer contact screen")
+            val intent = Intent(this, DeveloperContactActivity::class.java)
+            startActivity(intent)
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Failed to open developer contact screen", e)
+            Toast.makeText(this, "Unable to open developer contact", Toast.LENGTH_SHORT).show()
         }
     }
     

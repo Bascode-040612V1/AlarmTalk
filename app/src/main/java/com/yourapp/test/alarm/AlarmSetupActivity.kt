@@ -75,7 +75,11 @@ class AlarmSetupActivity : AppCompatActivity() {
     private lateinit var switchVibration: SwitchMaterial
     private lateinit var seekBarTtsVolume: SeekBar
     private lateinit var textTtsVolume: TextView
-    private lateinit var spinnerTtsVoice: Spinner  // Add this line for TTS voice selection
+    
+    // Advanced Options UI elements
+    private lateinit var layoutAdvancedOptionsHeader: LinearLayout
+    private lateinit var layoutAdvancedOptionsContent: LinearLayout
+    private lateinit var imageAdvancedOptionsArrow: ImageView
 
     private var selectedRingtoneUri: Uri? = null
     private var selectedRingtoneName: String = "Default"
@@ -178,6 +182,11 @@ class AlarmSetupActivity : AppCompatActivity() {
         toggleVoiceHistory = findViewById(R.id.toggleVoiceHistory)
         switchVibration = findViewById(R.id.switchVibration)
         
+        // Advanced Options UI elements
+        layoutAdvancedOptionsHeader = findViewById(R.id.layoutAdvancedOptionsHeader)
+        layoutAdvancedOptionsContent = findViewById(R.id.layoutAdvancedOptionsContent)
+        imageAdvancedOptionsArrow = findViewById(R.id.imageAdvancedOptionsArrow)
+        
         // Volume Controls
         seekBarRingtoneVolume = findViewById(R.id.seekBarRingtoneVolume)
         seekBarVoiceVolume = findViewById(R.id.seekBarVoiceVolume)
@@ -185,7 +194,6 @@ class AlarmSetupActivity : AppCompatActivity() {
         textVoiceVolume = findViewById(R.id.textVoiceVolume)
         seekBarTtsVolume = findViewById(R.id.seekBarTtsVolume)
         textTtsVolume = findViewById(R.id.textTtsVolume)
-        spinnerTtsVoice = findViewById(R.id.spinnerTtsVoice)  // Initialize TTS voice spinner
         
         seekBarTtsVolume.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -652,9 +660,6 @@ class AlarmSetupActivity : AppCompatActivity() {
             Toast.makeText(this, if (isChecked) "Vibration enabled" else "Vibration disabled", Toast.LENGTH_SHORT).show()
         }
         
-        // Setup TTS Voice Selection Spinner
-        setupTtsVoiceSpinner()
-        
         // CRITICAL FIX: Add missing Voice History Toggle Button functionality
         toggleVoiceHistory.setOnCheckedChangeListener { _, isChecked ->
             Log.d("AlarmSetupActivity", "Voice History Toggle: $isChecked")
@@ -678,33 +683,30 @@ class AlarmSetupActivity : AppCompatActivity() {
             }
         }
         
+        // Setup Advanced Options collapsible section
+        setupAdvancedOptionsToggle()
+        
         Log.d("AlarmSetupActivity", "New UI elements setup completed!")
     }
     
-    private fun setupTtsVoiceSpinner() {
-        val voiceOptions = arrayOf("Female Voice", "Male Voice")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, voiceOptions)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerTtsVoice.adapter = adapter
+    private fun setupAdvancedOptionsToggle() {
+        var isAdvancedOptionsVisible = false
         
-        // Set default selection based on saved value or default to female
-        spinnerTtsVoice.setSelection(if (selectedTtsVoice == "male") 1 else 0)
-        
-        spinnerTtsVoice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                selectedTtsVoice = if (position == 0) "female" else "male"
-                Log.d("AlarmSetupActivity", "TTS voice selected: $selectedTtsVoice")
-                
-                // Test the selected voice if TTS is initialized
-                if (ttsInitialized) {
-                    testSelectedTtsVoice()
-                }
+        layoutAdvancedOptionsHeader.setOnClickListener {
+            isAdvancedOptionsVisible = !isAdvancedOptionsVisible
+            
+            // Toggle visibility of content
+            layoutAdvancedOptionsContent.visibility = if (isAdvancedOptionsVisible) {
+                View.VISIBLE
+            } else {
+                View.GONE
             }
             
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Default to female voice
-                selectedTtsVoice = "female"
-            }
+            // Rotate arrow icon
+            val rotation = if (isAdvancedOptionsVisible) 270f else 90f
+            imageAdvancedOptionsArrow.animate().rotation(rotation).setDuration(200).start()
+            
+            Log.d("AlarmSetupActivity", "Advanced Options visibility: $isAdvancedOptionsVisible")
         }
     }
     
@@ -894,7 +896,6 @@ class AlarmSetupActivity : AppCompatActivity() {
         
         // Set TTS voice selection
         selectedTtsVoice = alarm.ttsVoice
-        spinnerTtsVoice.setSelection(if (selectedTtsVoice == "male") 1 else 0)
         
         // Set volumes
         ringtoneVolume = alarm.ringtoneVolume
