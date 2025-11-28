@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlarmTalk - Advanced Alarm Clock App</title>
+    <link rel="icon" type="image/jpg" href="images/alarmtalkicon.jpg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1A1A2E, #16213E, #0F3460);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('images/alarmtalkicon.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            z-index: 1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            color: #1A1A2E;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero h2 {
+            color: #16213E;
+            margin: 2rem 0 1rem;
+        }
+
+        .download-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .version-info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 1rem;
+            margin: 1rem auto;
+            border-radius: 4px;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .version-label {
+            font-weight: bold;
+            color: #0F4C75;
+        }
+
+        .version-number {
+            font-size: 1.2rem;
+            color: #E94560;
+            font-weight: bold;
+        }
+
+        .old-versions-toggle {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            margin: 1rem auto;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+            max-width: 300px;
+        }
+
+        .old-versions-toggle:hover {
+            background: #e0e0e0;
+        }
+
+        .old-versions-container {
+            display: none;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem auto;
+            max-width: 600px;
+        }
+
+        .old-versions-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .old-versions-list li {
+            padding: 0.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .old-versions-list li:last-child {
+            border-bottom: none;
+        }
+
+        .old-version-link {
+            color: #1A1A2E;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .old-version-link:hover {
+            text-decoration: underline;
+            color: #E94560;
+        }
+
+        .old-version-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #E94560, #FF6B35);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 1rem 0;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .feature-card h3 {
+            color: #0F4C75;
+            margin-bottom: 1rem;
+        }
+
+        .instructions {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .instructions ol {
+            padding-left: 2rem;
+            margin: 1rem 0;
+        }
+
+        .instructions li {
+            margin-bottom: 1rem;
+        }
+
+        .developers {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .developer-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .developer {
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #0F4C75;
+        }
+
+        footer {
+            background: #1A1A2E;
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('images/alarmtalkicon.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: 1;
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .contact-links {
+            margin: 1rem 0;
+        }
+
+        .contact-links a {
+            color: #4FC3F7;
+            margin: 0 1rem;
+            text-decoration: none;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .contact-links a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-background"></div>
+        <div class="header-content">
+            <h1>AlarmTalk</h1>
+            <div class="header-subtitle">Advanced Alarm Clock App with Voice and TTS Features</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="hero">
+            <h1>Wake Up to Words That Matter</h1>
+            <p>Experience the next generation of alarm clocks with customizable voice messages, text-to-speech overlays, and advanced scheduling features.</p>
+        </section>
+
+        <section class="download-section">
+            <h2>Download AlarmTalk for Android</h2>
+            <p>Get started with our advanced alarm clock app today!</p>
+            <div class="version-info">
+                <span class="version-label">Latest Release:</span>
+                <span id="latest-version" class="version-number">Loading...</span>
+            </div>
+            
+            <a href="https://github.com/Bascode-040612V1/AlarmTalk/releases/latest/download/AlarmTalk.apk" class="btn" target="_blank">Download Latest Version</a>
+            
+            <div class="old-versions-toggle" onclick="toggleOldVersions()">
+                ▼ Show Older Versions
+            </div>
+            <div id="old-versions-container" class="old-versions-container">
+                <h3>Previous Releases</h3>
+                <ul id="old-versions-list" class="old-versions-list">
+                    <li>Loading previous versions...</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <h3>Voice Recording Integration</h3>
+                <p>Record personalized voice messages that play with your alarm for a gentle, familiar wake-up call. Perfect for parents who want to wake their children with a loving message.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Text-to-Speech</h3>
+                <p>Convert your alarm notes to speech for a personalized wake-up message.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Flexible Scheduling</h3>
+                <p>Set one-time or repeating alarms with customizable days and times. Choose from daily, weekdays, weekends, or custom schedules.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Advanced Audio Control</h3>
+                <p>Adjust alarm volume with a dedicated slider. Enable vibration and choose from multiple ringtone options with previews.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Snooze Options</h3>
+                <p>Select from 5-30 minute snooze intervals to give yourself more rest time.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Audio Mixing</h3>
+                <p>Play your recorded voice message with your chosen ringtone for a personalized alarm experience.</p>
+            </div>
+        </section>
+
+        <section class="instructions">
+            <h2>How to Use AlarmTalk</h2>
+            <ol>
+                <li><strong>Download and Install:</strong> Download the app from GitHub and install the APK on your Android device.</li>
+                <li><strong>Grant Permissions:</strong> Allow necessary permissions including microphone access for voice recording, notification access, and overlay permissions for lock screen display.</li>
+                <li><strong>Create an Alarm:</strong> Tap the "+" button to create a new alarm and set your desired time using the time picker.</li>
+                <li><strong>Customize:</strong> Add a title and note (up to 200 characters).</li>
+                <li><strong>Enable TTS:</strong> Turn on the Text-to-Speech toggle to convert your note to speech.</li>
+                <li><strong>Set Repeat Days:</strong> Choose which days you want the alarm to repeat (everyday, weekdays, weekends, or custom days).</li>
+                <li><strong>Adjust Volume:</strong> Set your preferred alarm volume using the volume slider.</li>
+                <li><strong>Select Ringtone:</strong> Choose your preferred ringtone from the available options with preview functionality.</li>
+                <li><strong>Configure Snooze:</strong> Select your preferred snooze duration from 5-30 minutes.</li>
+                <li><strong>Set Vibration:</strong> Enable or disable vibration for your alarm.</li>
+                <li><strong>Advanced Settings:</strong> Access advanced options to record voice messages and manage recordings.</li>
+                <li><strong>Save and Activate:</strong> Save your alarm and toggle it on to activate.</li>
+                <li><strong>Wake Up:</strong> When your alarm triggers, use the snooze or dismiss buttons to manage it.</li>
+            </ol>
+        </section>
+
+        <section class="developers">
+            <h2>Meet the Developers</h2>
+            <div class="developer-list">
+                <div class="developer">
+                    <h3>Basco, Joshua P</h3>
+                    <p>Lead Developer & UI/UX Designer</p>
+                </div>
+                <div class="developer">
+                    <h3>Bautista, Jerome P</h3>
+                    <p>Backend Developer & Audio Specialist</p>
+                </div>
+                <div class="developer">
+                    <h3>Cagampang, Rolly P</h3>
+                    <p>Android Framework Expert</p>
+                </div>
+                <div class="developer">
+                    <h3>Carmelo, Jessie Daniel G</h3>
+                    <p>Testing & Quality Assurance</p>
+                </div>
+                <div class="developer">
+                    <h3>Duclayan, Ryan E</h3>
+                    <p>Feature Implementation</p>
+                </div>
+                <div class="developer">
+                    <h3>Macalatas, Nashria M</h3>
+                    <p>UI Design & User Experience</p>
+                </div>
+                <div class="developer">
+                    <h3>Matia-ong, Joshua Jay O</h3>
+                    <p>Audio Processing & TTS Integration</p>
+                </div>
+                <div class="developer">
+                    <h3>Obumani, Mike Kevin N</h3>
+                    <p>System Architecture & Performance</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-background"></div>
+        <div class="footer-content">
+            <p>© 2025 AlarmTalk by Bascode and Team. All rights reserved.</p>
+            <p>Made with ❤️ for better mornings</p>
+            <div class="contact-links">
+                <a href="mailto:alarmtalk.support@proton.me">Contact Us</a>
+                <a href="https://github.com/Bascode-040612V1/AlarmTalk" target="_blank">GitHub Repository</a>
+                <a href="http://alarmtalk.is-best.net/" target="_blank">Visit Our Website</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Fetch the latest release information from GitHub
+        fetch('https://api.github.com/repos/Bascode-040612V1/AlarmTalk/releases/latest')
+            .then(response => response.json())
+            .then(data => {
+                const versionElement = document.getElementById('latest-version');
+                if (data && data.tag_name) {
+                    versionElement.textContent = data.tag_name;
+                    versionElement.title = `Released on ${new Date(data.published_at).toLocaleDateString()}`;
+                } else {
+                    versionElement.textContent = 'Version info unavailable';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching release data:', error);
+                document.getElementById('latest-version').textContent = 'Version info unavailable';
+            });
+
+        // Toggle visibility of older versions
+        function toggleOldVersions() {
+            const container = document.getElementById('old-versions-container');
+            const toggle = document.querySelector('.old-versions-toggle');
+            
+            if (container.style.display === 'block') {
+                container.style.display = 'none';
+                toggle.innerHTML = '▼ Show Older Versions';
+            } else {
+                container.style.display = 'block';
+                toggle.innerHTML = '▲ Hide Older Versions';
+                // Fetch older versions if not already loaded
+                if (container.innerHTML.includes('Loading')) {
+                    fetchOldVersions();
+                }
+            }
+        }
+
+        // Fetch and display older versions
+        function fetchOldVersions() {
+            fetch('https://api.github.com/repos/Bascode-040612V1/AlarmTalk/releases')
+                .then(response => response.json())
+                .then(releases => {
+                    const versionsList = document.getElementById('old-versions-list');
+                    
+                    if (releases && releases.length > 0) {
+                        // Clear the loading message
+                        versionsList.innerHTML = '';
+                        
+                        // Display up to 10 previous releases (skip the first one as it's the latest)
+                        const previousReleases = releases.slice(1, 11);
+                        
+                        if (previousReleases.length === 0) {
+                            versionsList.innerHTML = '<li>No previous releases found</li>';
+                            return;
+                        }
+                        
+                        previousReleases.forEach(release => {
+                            // Find the APK asset
+                            const apkAsset = release.assets.find(asset => asset.name.endsWith('.apk'));
+                            
+                            if (apkAsset) {
+                                const listItem = document.createElement('li');
+                                const releaseDate = new Date(release.published_at).toLocaleDateString();
+                                
+                                listItem.innerHTML = `
+                                    <a href="${apkAsset.browser_download_url}" class="old-version-link" target="_blank">
+                                        ${release.tag_name}
+                                    </a>
+                                    <span class="old-version-date">${releaseDate}</span>
+                                `;
+                                
+                                versionsList.appendChild(listItem);
+                            }
+                        });
+                    } else {
+                        versionsList.innerHTML = '<li>Unable to fetch previous versions</li>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching older releases:', error);
+                    document.getElementById('old-versions-list').innerHTML = '<li>Error loading previous versions</li>';
+                });
+        }
+    </script>
+</body>
+</html>
